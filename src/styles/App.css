@@ -1,6 +1,9 @@
 * {
   font-family: monospace;
 }
+table {
+  margin: 0 auto;
+}
 .avatarImage {
   height: 25vh;
   width: auto;

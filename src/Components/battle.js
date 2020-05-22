@@ -1564,7 +1564,7 @@ class battle extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{height: "100vh"}}>
         {this.state.levelUp ? (
           <div className="modal">
             <h2>Level Up!</h2>
@@ -1622,7 +1622,7 @@ class battle extends Component {
           <div>
             <div>
               <div>
-                <div>Lvl {this.state.player.lvl + 1}</div>
+              <div>Lvl {this.state.player.lvl + 1}</div>
                 <div
                   style={{
                     margin: "0 auto",
@@ -1635,7 +1635,8 @@ class battle extends Component {
                 >
                   HP
                 </div>
-                <img className="avatarImage"
+                <img
+                  className="avatarImage"
                   id="player"
                   alt="Player avatar"
                   src={this.state.player.avatar}
@@ -1660,9 +1661,8 @@ class battle extends Component {
             </div>
           </div>
         </div>
-                <div>
+        <div>
         <th>Enemy</th>
-
         <div
           style={{
             margin: "0 auto",
@@ -1675,7 +1675,7 @@ class battle extends Component {
         </div>
         <img className="avatarImage" alt="enemy avatar" src={this.state.enemy.image}></img>
           <table>
-          <tr>
+            <tr>
               <th>HP:</th>
               <th>Str:</th>
               <th>Dex:</th>
@@ -1683,13 +1683,12 @@ class battle extends Component {
               <th>Armor:</th>
             </tr>
             <td>{this.state.enemy.hp}</td>
-        <td>{this.state.enemy.str}</td>
-        <td>{this.state.enemy.dex}</td>
-        <td>{this.state.enemy.weapon.name}</td>
-        <td>{this.state.enemy.armor.name}</td>
+            <td>{this.state.enemy.str}</td>
+            <td>{this.state.enemy.dex}</td>
+            <td>{this.state.enemy.weapon.name}</td>
+            <td>{this.state.enemy.armor.name}</td>
           </table>
-       
-</div>
+        </div>
         <div>
           {this.state.console.map((val, ind) => {
             return <div key={ind}>{val}</div>;
