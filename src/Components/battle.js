@@ -79,7 +79,7 @@ let enemies = [
   Object.assign({}, axePlate),
   Object.assign({}, axePlate),
   Object.assign({}, axePlate),
-  Object.assign({}, bossGuy),//125
+  Object.assign({}, bossGuy), //125
   Object.assign({}, daggerCloth),
   Object.assign({}, longswordLeather),
   Object.assign({}, axePlate),
@@ -99,10 +99,10 @@ class battle extends Component {
     super(props);
     console.log("Constructing " + this.props.player.lvl);
     let total = 0;
-    enemies.map((val)=>{
+    enemies.map((val) => {
       total += val.exp;
       return 0;
-    })
+    });
     console.log(total);
     this.resetEnemies();
     this.state = {
@@ -373,7 +373,6 @@ class battle extends Component {
         case newPlayer.exp >= 150 && newPlayer.lvl < 5:
         case newPlayer.exp >= 200 && newPlayer.lvl < 6:
         case newPlayer.exp >= 250 && newPlayer.lvl < 7:
-
           if (newPlayer.lvl % 2 === 0 && newPlayer.items.length < 3) {
             let newState = {
               player: newPlayer,
@@ -1569,31 +1568,18 @@ class battle extends Component {
         {this.state.levelUp ? (
           <div className="modal">
             <h2>Level Up!</h2>
-            <table className="modal-content">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Increase a stat</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <button name="str" onClick={this.levelUp}>
-                      Str
-                    </button>
-                  </td>
-                  <td></td>
+            <div className="modal-content">
+              <div>Increase a stat</div>
+              <div>
+                <button name="str" onClick={this.levelUp}>
+                  Str
+                </button>
 
-                  <td>
-                    <button name="dex" onClick={this.levelUp}>
-                      Dex
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                <button name="dex" onClick={this.levelUp}>
+                  Dex
+                </button>
+              </div>
+            </div>
           </div>
         ) : (
           <div></div>
@@ -1601,34 +1587,22 @@ class battle extends Component {
         {this.state.selectItem ? (
           <div className="modal">
             <h2>Level Up!</h2>
-            <table className="modal-content">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Select an Item</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <button name="heal" onClick={this.addItem}>
-                      heal
-                    </button>
-                  </td>
-                  <td>
-                    <button name="buff" onClick={this.addItem}>
-                      buff
-                    </button>
-                  </td>
-                  <td>
-                    <button name="swift" onClick={this.addItem}>
-                      swift
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="modal-content">
+              <div>Select an Item</div>
+              <div>
+                <button name="heal" onClick={this.addItem}>
+                  heal
+                </button>
+
+                <button name="buff" onClick={this.addItem}>
+                  buff
+                </button>
+
+                <button name="swift" onClick={this.addItem}>
+                  swift
+                </button>
+              </div>
+            </div>
           </div>
         ) : (
           <div></div>
@@ -1644,20 +1618,11 @@ class battle extends Component {
         ) : (
           ""
         )}
-        <table id="playerTable">
-          <thead>
-            <tr>
-              <th>Lvl {this.state.player.lvl + 1}</th>
-              <th>HP:</th>
-              <th>Str:</th>
-              <th>Dex:</th>
-              <th>Weapon:</th>
-              <th>Armor:</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
+        <div id="playerTable">
+          <div>
+            <div>
+              <div>
+                <div>Lvl {this.state.player.lvl + 1}</div>
                 <div
                   style={{
                     margin: "0 auto",
@@ -1670,59 +1635,61 @@ class battle extends Component {
                 >
                   HP
                 </div>
-                <img
+                <img className="avatarImage"
                   id="player"
                   alt="Player avatar"
                   src={this.state.player.avatar}
                 ></img>
-              </td>
+              </div>
+              <table>
+                <thead>
+                  <th>HP:</th>
+                  <th>Str:</th>
+                  <th>Dex:</th>
+                  <th>Weapon:</th>
+                  <th>Armor:</th>
+                </thead>
+                <tbody>
+                  <td>{this.state.playerHp}</td>
+                  <td>{this.state.player.str}</td>
+                  <td>{this.state.player.dex}</td>
+                  <td>{this.state.player.weapon.name}</td>
+                  <td>{this.state.player.armor.name}</td>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+                <div>
+        <th>Enemy</th>
 
-              <td>{this.state.playerHp}</td>
-              <td>{this.state.player.str}</td>
-              <td>{this.state.player.dex}</td>
-              <td>{this.state.player.weapon.name}</td>
-              <td>{this.state.player.armor.name}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Enemy</th>
+        <div
+          style={{
+            margin: "0 auto",
+            backgroundColor: "red",
+            height: "100%",
+            width: `${(this.state.enemy.hp / this.state.enemy.str) * 100}%`,
+          }}
+        >
+          HP
+        </div>
+        <img className="avatarImage" alt="enemy avatar" src={this.state.enemy.image}></img>
+          <table>
+          <tr>
               <th>HP:</th>
               <th>Str:</th>
               <th>Dex:</th>
               <th>Weapon:</th>
               <th>Armor:</th>
             </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                {" "}
-                <div
-                  style={{
-                    margin: "0 auto",
-                    backgroundColor: "red",
-                    height: "100%",
-                    width: `${
-                      (this.state.enemy.hp / this.state.enemy.str) * 100
-                    }%`,
-                  }}
-                >
-                  HP
-                </div>
-                <img alt="enemy avatar" src={this.state.enemy.image}></img>
-              </td>
-              <td>{this.state.enemy.hp}</td>
-              <td>{this.state.enemy.str}</td>
-              <td>{this.state.enemy.dex}</td>
-              <td>{this.state.enemy.weapon.name}</td>
-              <td>{this.state.enemy.armor.name}</td>
-            </tr>
-          </tbody>
-        </table>
+            <td>{this.state.enemy.hp}</td>
+        <td>{this.state.enemy.str}</td>
+        <td>{this.state.enemy.dex}</td>
+        <td>{this.state.enemy.weapon.name}</td>
+        <td>{this.state.enemy.armor.name}</td>
+          </table>
+       
+</div>
         <div>
           {this.state.console.map((val, ind) => {
             return <div key={ind}>{val}</div>;

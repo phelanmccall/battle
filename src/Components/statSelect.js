@@ -247,128 +247,86 @@ class statSelect extends Component {
   render() {
     return (
       <div>
-        <img alt="Player Avatar" src={this.props.player.avatar}></img>
-        <div style={{
-          margin: "0 auto",
-          width: "300px"
-        }}> <div
-          style={{
-            
-            backgroundColor: "red",
-            width: `${(this.props.player.str/18)*100}%`,
-          }}
-        >
-          STR
+        <div>
+          <img
+            className="avatarImage"
+            alt="Player Avatar"
+            src={this.props.player.avatar}
+          ></img>
+          <div
+            style={{
+              backgroundColor: "red",
+              margin: "0 auto",
+              width: `${(this.props.player.str / 18) * 100}%`,
+            }}
+          >
+            STR
+          </div>
+
+          <div
+            style={{
+              color: "white",
+              backgroundColor: "blue",
+              margin: "0 auto",
+              width: `${(this.props.player.dex / 18) * 100}%`,
+            }}
+          >
+            DEX
+          </div>
         </div>
 
-        <div
-          style={{
-            color: "white",
-            backgroundColor: "blue",
-            width: `${(this.props.player.dex/18)*100}%`,
-          }}
-        >
-          DEX
-        </div></div>
-        <table className="selectTable">
-          <thead>
-            <tr>
-              <th>Set your STATS</th>
-            </tr>
-            <tr>
-              <th>Points:</th>
-              <th>{this.state.points}/12</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>STR</td>
-              <td>
-                <button name="str" onClick={this.Min}>
-                  {" "}
-                  MIN
-                </button>
-              </td>
-              <td>
-                <button name="str" onClick={this.minHalf}>
-                  Minus half
-                </button>
-              </td>
+        <h2>Set your STATS</h2>
 
-              <td>
-                <button onClick={this.DownStr}>-</button>
-              </td>
-              <td>
-                {this.props.player.str}
-                {/* <input
-                  name="str"
-                  type="number"
-                  min="6"
-                  onChange={this.SetStr}
-                  defaultValue={this.props.player.str}
-                ></input> */}
-              </td>
-              <td>
-                <button onClick={this.UpStr}>+</button>
-              </td>
-              <td>
-                <button name="str" onClick={this.addHalf}>
-                  Add half
-                </button>
-              </td>
+        <h5>Points:</h5>
+        <div>{this.state.points}/12</div>
+        <div style={{ width: "100vw" }}>
+          <button name="str" onClick={this.Min}>
+            {" "}
+            MIN
+          </button>
 
-              <td>
-                <button name="str" onClick={this.Max}>
-                  MAX
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>DEX</td>
-              <td>
-                <button name="dex" onClick={this.Min}>
-                  {" "}
-                  MIN
-                </button>
-              </td>
-              <td>
-                <button name="dex" onClick={this.minHalf}>
-                  Minus half
-                </button>
-              </td>
+          <button name="str" onClick={this.minHalf}>
+            -1/2{" "}
+          </button>
 
-              <td>
-                <button onClick={this.DownDex}>-</button>
-              </td>
+          <button onClick={this.DownStr}>-</button>
+          <span> STR </span>
+          <button onClick={this.UpStr}>+</button>
 
-              <td>
-                {this.props.player.dex}
-                {/* <input
-                  name="dex"
-                  type="number"
-                  min="6"
-                  onChange={this.SetDex}
-                  defaultValue={this.props.player.dex}
-                ></input> */}
-              </td>
-              <td>
-                <button onClick={this.UpDex}>+</button>
-              </td>
-              <td>
-                <button name="dex" onClick={this.addHalf}>
-                  Add half
-                </button>
-              </td>
-              <td>
-                <button name="dex" onClick={this.Max}>
-                  MAX
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <button onClick={this.props.setStats}>Done</button>
-        <div> {this.state.error}</div>
+          <button name="str" onClick={this.addHalf}>
+            +1/2{" "}
+          </button>
+
+          <button name="str" onClick={this.Max}>
+            MAX
+          </button>
+        </div>
+        <div>
+          <button name="dex" onClick={this.Min}>
+            {" "}
+            MIN
+          </button>
+
+          <button name="dex" onClick={this.minHalf}>
+            -1/2{" "}
+          </button>
+
+          <button onClick={this.DownDex}>-</button>
+          <span> DEX </span>
+          <button onClick={this.UpDex}>+</button>
+
+          <button name="dex" onClick={this.addHalf}>
+            +1/2{" "}
+          </button>
+
+          <button name="dex" onClick={this.Max}>
+            MAX
+          </button>
+        </div>
+        <div>
+          <button onClick={this.props.setStats}>Done</button>
+          <div> {this.state.error}</div>
+        </div>
       </div>
     );
   }

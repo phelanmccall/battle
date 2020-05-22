@@ -13,20 +13,16 @@ class itemSelect extends Component {
        <div>dex: {this.props.player.dex}</div>
     <div>Weapon: {this.props.player.weapon.name}</div>
     <div>Armor: {this.props.player.armor.name}</div>
-        <table className="selectTable">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Select your item</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><div>{this.state.error}</div></td>
-          </tr>
-          <tr>
-            <td>
+        <div>
+        <div>
+        
+            <div>Select your item</div>
+            
+        </div>
+        <div>
+          <div>{this.state.error}</div>
+          <div>
+            <div>
               <button
                 onClick={() => {
                   this.props.setItem(heal);
@@ -34,8 +30,8 @@ class itemSelect extends Component {
               >
                 heal ( +6 hp )
               </button>
-            </td>
-            <td>
+            </div>
+            <div>
               <button
                 onClick={() => {
                     this.props.setItem(buff);
@@ -44,8 +40,8 @@ class itemSelect extends Component {
               >
                 buff ( +6 dmg next attack )
               </button>
-            </td>
-            <td>
+            </div>
+            <div>
               <button
                 onClick={() => {
                     this.props.setItem(swift);
@@ -54,10 +50,10 @@ class itemSelect extends Component {
               >
                 swift ( +6 dex next attack )
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          </div>
+        </div>
+      </div>
    
      </div> );
   }

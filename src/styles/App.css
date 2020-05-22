@@ -1,7 +1,11 @@
 * {
   font-family: monospace;
 }
-
+.avatarImage {
+  height: 25vh;
+  width: auto;
+  margin: 0 1vw;
+}
 .modal {
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */

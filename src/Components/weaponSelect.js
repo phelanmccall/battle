@@ -12,20 +12,15 @@ class weaponSelect extends Component {
        <div>Str: {this.props.player.str}</div>
        <div>dex: {this.props.player.dex}</div>
 
-        <table className="selectTable">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Select your weapon</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><div>{this.state.error}</div></td>
-          </tr>
-          <tr>
-            <td>
+    <div>
+        <div>
+          Select your weapon
+           
+        </div>
+        <div>
+        <div>{this.state.error}</div>
+        
+            <div>
               <button
                 onClick={() => {
                   this.props.setWeapon(dagger);
@@ -33,8 +28,8 @@ class weaponSelect extends Component {
               >
                 Dagger
               </button>
-            </td>
-            <td>
+            </div>
+            <div>
               <button
                 onClick={() => {
                   if (this.props.player.str >= longsword.minStr) {
@@ -46,8 +41,8 @@ class weaponSelect extends Component {
               >
                 Long Sword
               </button>
-            </td>
-            <td>
+            </div>
+            <div>
               <button
                 onClick={() => {
                   if (this.props.player.str >= axe.minStr) {
@@ -59,10 +54,10 @@ class weaponSelect extends Component {
               >
                 Axe
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          
+        </div>
+      </div>
    
      </div> );
   }

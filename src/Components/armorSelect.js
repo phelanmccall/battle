@@ -9,11 +9,11 @@ class armorSelect extends Component {
       <div>Str: {this.props.player.str}</div>
       <div>dex: {this.props.player.dex}</div>
       <div>Weapon: {this.props.player.weapon.name}</div>
-      <table className="selectTable">
-        <thead><tr><th></th><th>Select your armor</th><th></th></tr></thead>
-        <tbody>
-          <tr>
-          <td>
+      <div>
+        <div>Select your armor</div>
+        <div>
+        
+          <div>
             <button
               onClick={() => {
                 this.props.setArmor(cloth);
@@ -21,8 +21,8 @@ class armorSelect extends Component {
             >
               Cloth
             </button>
-          </td>
-          <td>
+          </div>
+          <div>
             <button
               onClick={() => {
                 this.props.setArmor(leather);
@@ -30,8 +30,8 @@ class armorSelect extends Component {
             >
               Leather
             </button>
-          </td>
-          <td>
+          </div>
+          <div>
             <button
               onClick={() => {
                 this.props.setArmor(plate);
@@ -39,10 +39,10 @@ class armorSelect extends Component {
             >
               Plate
             </button>
-          </td>
-          </tr>
-        </tbody>
-      </table>
+          </div>
+          
+        </div>
+      </div>
     
       </div>
     );

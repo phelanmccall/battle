@@ -8,14 +8,12 @@ class avatarSelect extends Component {
     return (
       <div>
        
-        <table className="selectTable">
-            <thead>
-                <tr><td></td><th>Select your Avatar</th><td></td></tr>
-            </thead>
-          <tbody>
-            <tr>
-              <td>
+            <h2>
+                Select your Avatar
+            </h2>
+          <div>
                 <input
+                className="avatarImage"
                 alt="Avatar of a noble"
                 type="image"
                   src={noble}
@@ -23,9 +21,9 @@ class avatarSelect extends Component {
                     this.props.setAvatar(noble);
                   }}
                 ></input>
-              </td>
-              <td>
+              
                 <input
+                className="avatarImage"
                 alt="Avatar of a candle"
                 type="image"
                   src={candle}
@@ -33,9 +31,9 @@ class avatarSelect extends Component {
                     this.props.setAvatar(candle);
                   }}
                 ></input>
-              </td>
-              <td>
+              
                 <input
+                className="avatarImage"
                 alt="Avatar of a bartender"
                 type="image"
                   src={bartender}
@@ -43,10 +41,8 @@ class avatarSelect extends Component {
                     this.props.setAvatar(bartender);
                   }}
                 ></input>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          </div>
+      
       </div>
     );
   }
