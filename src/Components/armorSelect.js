@@ -10,6 +10,7 @@ class armorSelect extends Component {
       <div>dex: {this.props.player.dex}</div>
       <div>Weapon: {this.props.player.weapon.name}</div>
       <table className="selectTable">
+        <thead><tr><th></th><th>Select your armor</th><th></th></tr></thead>
         <tbody>
           <tr>
           <td>

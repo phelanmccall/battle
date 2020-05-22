@@ -12,31 +12,120 @@ class statSelect extends Component {
   componentDidMount = () => {};
 
   Max = (e) => {
-   if(this.state.points > 0){
-    let name = e.target.name;
-    switch (name) {
-      case "str":
-        this.props.changeStr(this.state.points);
-        this.setState({
-          points: 0,
-          error: "",
-        });
-        break;
-      case "dex":
-        this.props.changeDex(this.state.points);
-        this.setState({
-          points: 0,
-          error: "",
-        });
-        break;
-      default:
-        break;
+    if (this.state.points > 0) {
+      let name = e.target.name;
+      switch (name) {
+        case "str":
+          this.props.changeStr(this.state.points);
+          this.setState({
+            points: 0,
+            error: "",
+          });
+          break;
+        case "dex":
+          this.props.changeDex(this.state.points);
+          this.setState({
+            points: 0,
+            error: "",
+          });
+          break;
+        default:
+          break;
+      }
+    } else {
+      this.setState({
+        error: "Error: No points.",
+      });
     }
-   }else{
-     this.setState({
-       error: "Error: No points."
-     })
-   }
+  };
+  Min = (e) => {
+    let name = e.target.name;
+    if (this.props.player[name] > 6) {
+      let dif = 6 - this.props.player[name];
+      let newPoints = this.state.points + Math.abs(dif);
+      switch (name) {
+        case "str":
+          this.props.changeStr(dif);
+          this.setState({
+            points: newPoints,
+            error: "",
+          });
+          break;
+        case "dex":
+          this.props.changeDex(dif);
+          this.setState({
+            points: newPoints,
+            error: "",
+          });
+          break;
+        default:
+          break;
+      }
+    } else {
+      this.setState({
+        error: "Error: Stat at minimum.",
+      });
+    }
+  };
+  minHalf = (e) => {
+    let name = e.target.name;
+
+    if (this.props.player[name] > 6) {
+      let dif = Math.floor((6 - this.props.player[name]) / 2);
+      let newPoints = this.state.points + Math.abs(dif);
+      switch (name) {
+        case "str":
+          this.props.changeStr(dif);
+          this.setState({
+            points: newPoints,
+            error: "",
+          });
+          break;
+        case "dex":
+          this.props.changeDex(dif);
+          this.setState({
+            points: newPoints,
+            error: "",
+          });
+          break;
+        default:
+          break;
+      }
+    } else {
+      this.setState({
+        error: "Error: Stat at minimum.",
+      });
+    }
+  };
+  addHalf = (e) => {
+    if (this.state.points > 0) {
+      let name = e.target.name;
+      let dif = Math.ceil(this.state.points / 2);
+      let newPoints = Math.floor(this.state.points / 2);
+
+      switch (name) {
+        case "str":
+          this.props.changeStr(dif);
+          this.setState({
+            points: newPoints,
+            error: "",
+          });
+          break;
+        case "dex":
+          this.props.changeDex(dif);
+          this.setState({
+            points: newPoints,
+            error: "",
+          });
+          break;
+        default:
+          break;
+      }
+    } else {
+      this.setState({
+        error: "Error: No points.",
+      });
+    }
   };
 
   UpStr = () => {
@@ -159,17 +248,53 @@ class statSelect extends Component {
     return (
       <div>
         <img alt="Player Avatar" src={this.props.player.avatar}></img>
+        <div style={{
+          margin: "0 auto",
+          width: "300px"
+        }}> <div
+          style={{
+            
+            backgroundColor: "red",
+            width: `${(this.props.player.str/18)*100}%`,
+          }}
+        >
+          STR
+        </div>
+
+        <div
+          style={{
+            color: "white",
+            backgroundColor: "blue",
+            width: `${(this.props.player.dex/18)*100}%`,
+          }}
+        >
+          DEX
+        </div></div>
         <table className="selectTable">
           <thead>
-            <tr><th>Set your STATS</th></tr>
+            <tr>
+              <th>Set your STATS</th>
+            </tr>
             <tr>
               <th>Points:</th>
-              <th>{this.state.points}</th>
+              <th>{this.state.points}/12</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>STR</td>
+              <td>
+                <button name="str" onClick={this.Min}>
+                  {" "}
+                  MIN
+                </button>
+              </td>
+              <td>
+                <button name="str" onClick={this.minHalf}>
+                  Minus half
+                </button>
+              </td>
+
               <td>
                 <button onClick={this.DownStr}>-</button>
               </td>
@@ -187,6 +312,12 @@ class statSelect extends Component {
                 <button onClick={this.UpStr}>+</button>
               </td>
               <td>
+                <button name="str" onClick={this.addHalf}>
+                  Add half
+                </button>
+              </td>
+
+              <td>
                 <button name="str" onClick={this.Max}>
                   MAX
                 </button>
@@ -195,8 +326,21 @@ class statSelect extends Component {
             <tr>
               <td>DEX</td>
               <td>
+                <button name="dex" onClick={this.Min}>
+                  {" "}
+                  MIN
+                </button>
+              </td>
+              <td>
+                <button name="dex" onClick={this.minHalf}>
+                  Minus half
+                </button>
+              </td>
+
+              <td>
                 <button onClick={this.DownDex}>-</button>
               </td>
+
               <td>
                 {this.props.player.dex}
                 {/* <input
@@ -209,6 +353,11 @@ class statSelect extends Component {
               </td>
               <td>
                 <button onClick={this.UpDex}>+</button>
+              </td>
+              <td>
+                <button name="dex" onClick={this.addHalf}>
+                  Add half
+                </button>
               </td>
               <td>
                 <button name="dex" onClick={this.Max}>

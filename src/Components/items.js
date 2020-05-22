@@ -1,4 +1,16 @@
 const items = {
+    heal: {
+      name: "heal",
+      value: 6
+    },
+    buff: {
+      name: "buff",
+      value: 6
+    },
+    swift: {
+      name: "swift",
+      value: 6
+    },
      cloth : {
     name: "cloth",
     defense: 1,
