@@ -9,10 +9,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("./build"));
 const router = require("express").Router();
-router.use(function (req, res) {
-    if (!res.headersSent) {
+router.use("*", function (req, res) {
       res.sendFile(path.join(__dirname, "../../build/index.html"));
-    }
+    
   });
 
 app.use(router);
