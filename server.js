@@ -9,10 +9,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("./build"));
 const router = require("express").Router();
-router.use("*", function (req, res) {
-      res.sendFile(path.join(__dirname, "../../build/index.html"));
+router.use("/", function (req, res) {
+      res.sendFile(path.join(__dirname, "./build/index.html"));
     
   });
+  router.use("*", function (req, res) {
+    res.sendFile(path.join(__dirname, "./build/index.html"));
+  
+});
+  router.use("/favicon.ico", function(req, res) {
+        res.send()
+   });
 
 app.use(router);
 

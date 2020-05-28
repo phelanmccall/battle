@@ -1,6 +1,11 @@
 * {
   font-family: monospace;
 }
+playerTable {
+  bottom: 0;
+  position: fixed;
+  height: 25vh;
+}
 table {
   margin: 0 auto;
 }
