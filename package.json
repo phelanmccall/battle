@@ -12,7 +12,7 @@
   },
   "proxy": "http://localhost:5000/",
   "scripts": {
-    "heroku-postbuild": "npm install npm run build",
+    "heroku-postbuild": "npm run build",
     "start": "node server",
     "build": "react-scripts build", 
     "test": "react-scripts start",
