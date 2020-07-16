@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import "../styles/statSelect.css";
+import selectScreens from "../images/selectScreens.png";
+
 class statSelect extends Component {
   constructor(props) {
     super(props);
@@ -136,7 +137,7 @@ class statSelect extends Component {
         error: "",
       });
     } else {
-      this.setState({ error: "Error: Can't add points" });
+      this.setState({ error: "Error: Out of points." });
     }
   };
   DownStr = () => {
@@ -147,7 +148,7 @@ class statSelect extends Component {
         error: "",
       });
     } else {
-      this.setState({ error: "Error: Can't subtract points" });
+      this.setState({ error: "Error: Stat can't go lower." });
     }
   };
   // SetStr = (e) => {
@@ -246,86 +247,88 @@ class statSelect extends Component {
 
   render() {
     return (
-      <div>
-        <div>
+      <div className="scene">
+        <img id="background" src={selectScreens} />
+
+        <div id="selectArea">
+          
+          <h2 className="selectTitle">Set your STATS</h2>
+          
           <img
             className="avatarImage"
             alt="Player Avatar"
             src={this.props.player.avatar}
           ></img>
-          <div
-            style={{
-              backgroundColor: "red",
-              margin: "0 auto",
-              width: `${(this.props.player.str / 18) * 100}%`,
-            }}
-          >
-            STR
+          <table>
+            <thead>
+              <tr>
+                
+                <th>Str:</th>
+                <th>Dex:</th>
+                
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+             
+                <td>{this.props.player.str}</td>
+                <td>{this.props.player.dex}</td>
+              
+              </tr>
+            </tbody>
+          </table>
+          <h5 className="selectTitle">Points: {this.state.points}/12</h5>
+          <div>
+       
+
+            <div className="selectTitle row justify-content-center">
+              <div className="col-6 col-lg-4 border">
+                <button
+                className="btn border button "
+                onClick={this.DownStr}
+              >
+                -
+              </button>
+              <span>STR:</span>
+              <button
+                className="btn border button "
+                onClick={this.UpStr}
+              >
+                +
+              </button><div> {this.props.player.str}</div></div>
+              <div className="col-6 col-lg-4 border">
+              <button
+                className="btn border button "
+                onClick={this.DownDex}
+              >
+                -
+              </button>
+              <span>DEX:</span>
+              <button
+                className="btn border button"
+                onClick={this.UpDex}
+              >
+                +
+              </button>
+              <div>{this.props.player.dex}</div>
+              </div>
+            </div>
+
           </div>
-
-          <div
-            style={{
-              color: "white",
-              backgroundColor: "blue",
-              margin: "0 auto",
-              width: `${(this.props.player.dex / 18) * 100}%`,
-            }}
-          >
-            DEX
+          <div>
+            <button className="btn border button" onClick={this.props.setStats}>
+              Done
+            </button>
+            <div className="selectTitle"> {this.state.error}</div>
+            <div className="selectTitle">
+              STR: Determines your HP and what weapons you can wield.
+              <br />
+              DEX: Determines who attacks first and accuracy.
+              <br />
+              Tip: Make sure you have enough STR to survive and enough DEX to
+              hit your enemy.
+            </div>
           </div>
-        </div>
-
-        <h2>Set your STATS</h2>
-
-        <h5>Points:</h5>
-        <div>{this.state.points}/12</div>
-        <div style={{ width: "100vw" }}>
-          <button name="str" onClick={this.Min}>
-            {" "}
-            MIN
-          </button>
-
-          <button name="str" onClick={this.minHalf}>
-            -1/2{" "}
-          </button>
-
-          <button onClick={this.DownStr}>-</button>
-          <span> STR </span>
-          <button onClick={this.UpStr}>+</button>
-
-          <button name="str" onClick={this.addHalf}>
-            +1/2{" "}
-          </button>
-
-          <button name="str" onClick={this.Max}>
-            MAX
-          </button>
-        </div>
-        <div>
-          <button name="dex" onClick={this.Min}>
-            {" "}
-            MIN
-          </button>
-
-          <button name="dex" onClick={this.minHalf}>
-            -1/2{" "}
-          </button>
-
-          <button onClick={this.DownDex}>-</button>
-          <span> DEX </span>
-          <button onClick={this.UpDex}>+</button>
-
-          <button name="dex" onClick={this.addHalf}>
-            +1/2{" "}
-          </button>
-
-          <button name="dex" onClick={this.Max}>
-            MAX
-          </button>
-        </div>
-        <div>
-          <button onClick={this.props.setStats}>Done</button>
-          <div> {this.state.error}</div>
         </div>
       </div>
     );

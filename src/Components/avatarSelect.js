@@ -1,27 +1,21 @@
 import React, { Component } from "react";
-import noble from "../images/noble.jpg";
 import candle from "../images/candle.png";
 import bartender from "../images/bartender.png";
-
+import items from "../Components/items";
+import selectScreens   from "../images/selectScreens.png";
+let {axe, plate} = items;
 class avatarSelect extends Component {
   render() {
     return (
-      <div>
-       
-            <h2>
+      <div className="scene">
+       <img id="background"  src={selectScreens }/>
+
+          <div id="selectArea">
+            
+          <h2 className="selectTitle">
                 Select your Avatar
             </h2>
-          <div>
-                <input
-                className="avatarImage"
-                alt="Avatar of a noble"
-                type="image"
-                  src={noble}
-                  onClick={() => {
-                    this.props.setAvatar(noble);
-                  }}
-                ></input>
-              
+                
                 <input
                 className="avatarImage"
                 alt="Avatar of a candle"
@@ -41,9 +35,31 @@ class avatarSelect extends Component {
                     this.props.setAvatar(bartender);
                   }}
                 ></input>
+   
           </div>
-      
-      </div>
+          {
+            this.props.checkpoint ? <button id="loadButton" className="btn border" onClick={this.props.load}>Load checkpoint</button> : ""
+          }
+          {/* <button onClick={()=>{
+            this.props.save({
+              player: {
+                items: [],
+                defending: 1,
+                dodge: 0,
+                str: 18,
+                dex: 18,
+                move: 4,
+                avatar: bartender,
+                default: bartender,
+                weapon: axe,
+                armor: plate,
+                lvl: 15,
+                exp: 650,
+              },
+              level: 20
+            })
+          }}>prop</button> */}
+      </div>  
     );
   }
 }

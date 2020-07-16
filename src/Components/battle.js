@@ -1,28 +1,32 @@
 import React, { Component } from "react";
 import items from "./items";
-import skeleton from "../images/skeleton.jpg";
-import daggerPic from "../images/dagger.gif";
-import axePic from "../images/axe.jpg";
+import swordUser from "../images/swordUser.png";
+import daggerUser from "../images/daggerUser.png";
 import boss from "../images/boss.png";
+import axeUser from "../images/axeUser.png";
+import dragon from "../images/dragon.png";
 import damaged from "../images/damaged.png";
 import missed from "../images/missed.png";
 import nodamage from "../images/nodamage.png";
 import dead from "../images/dead.png";
+import battlescene from "../images/battlescene.png";
 let {
   dagger,
   longsword,
   axe,
+  dragonClaw,
   cloth,
   leather,
   plate,
+  dragonSkin,
   heal,
   buff,
   swift,
 } = items;
 
 let daggerCloth = {
-  image: daggerPic,
-  default: daggerPic,
+  image: daggerUser,
+  default: daggerUser,
   hp: 8,
   str: 8,
   dex: 16,
@@ -33,8 +37,8 @@ let daggerCloth = {
 };
 
 let longswordLeather = {
-  image: skeleton,
-  default: skeleton,
+  image: swordUser,
+  default: swordUser,
 
   hp: 10,
   str: 10,
@@ -46,8 +50,8 @@ let longswordLeather = {
 };
 
 let axePlate = {
-  image: axePic,
-  default: axePic,
+  image: axeUser,
+  default: axeUser,
 
   hp: 14,
   str: 14,
@@ -66,6 +70,17 @@ let bossGuy = {
   weapon: longsword,
   armor: plate,
   exp: 25,
+};
+
+let dragonGuy = {
+  image: dragon,
+  default: dragon,
+  hp: 20,
+  str: 20,
+  dex: 18,
+  weapon: dragonClaw,
+  armor: dragonSkin,
+  exp: 50,
 };
 
 let enemies = [
@@ -92,6 +107,7 @@ let enemies = [
   Object.assign({}, longswordLeather),
   Object.assign({}, axePlate),
   Object.assign({}, bossGuy),
+  Object.assign({}, dragonGuy),
 ];
 
 class battle extends Component {
@@ -106,11 +122,15 @@ class battle extends Component {
     // console.log(total);
     // this.resetEnemies();
     this.state = {
-      checkpoint: { player: Object.assign({}, this.props.player), level: 0 },
+      save: false,
+      checkpoint: {
+        player: Object.assign({}, this.props.player),
+        level: this.props.level ? this.props.level : 0,
+      },
       use: [],
       levelUp: false,
       selectItem: false,
-      level: 0,
+      level: this.props.level ? this.props.level : 0,
       playerHp: this.props.player.str,
       player: Object.assign({}, this.props.player),
       enemy: enemies[0],
@@ -134,6 +154,17 @@ class battle extends Component {
   componentWillUnmount = () => {
     this.resetEnemies();
   };
+
+  save = (e) => {
+    if (e.target.name === "true") {
+      this.props.save(this.state.checkpoint);
+    }
+
+    this.setState({
+      askToSave: false,
+    });
+  };
+
   levelUp = (e) => {
     let { level } = this.state;
     let newPlayer = Object.assign({}, this.state.player);
@@ -159,6 +190,7 @@ class battle extends Component {
         };
         this.setState({
           checkpoint: newCheckpoint,
+          askToSave: true,
         });
       }
     );
@@ -224,62 +256,48 @@ class battle extends Component {
     let newPlayer = this.state.player;
     let newHp = this.state.playerHp;
     let newUse = [...this.state.use];
-    if (e.target.checked) {
-      switch (e.target.id) {
-        case "heal":
-          if (newHp < newPlayer.str) {
-            newHp = this.state.playerHp;
-            newHp += heal.value;
-            if (newHp > newPlayer.str) {
-              newHp = newPlayer.str;
-            }
-            this.updateConsole("Healed " + heal.value);
-            e.target.checked = false;
+    console.log(e.target.getAttribute("data-name"))
+    switch (e.target.getAttribute("data-name")) {
+      case "heal":
+        if (newHp < newPlayer.str) {
+          newHp = this.state.playerHp;
+          newHp += heal.value;
+          if (newHp > newPlayer.str) {
+            newHp = newPlayer.str;
+          }
+          this.updateConsole(
+            "Healed " + (newHp - this.state.playerHp) + " health."
+          );
 
-            this.removeItem(heal);
-          } else {
-            this.updateConsole("Full health.");
-            e.target.checked = false;
-          }
-          break;
-        case "buff":
-          if (newPlayer.items.includes(buff)) {
-            newUse.push(buff);
-          }
-          break;
-        case "swift":
-          if (newPlayer.items.includes(swift)) {
-            newUse.push(swift);
-          }
-          break;
-        default:
-          break;
-      }
-      this.setState({
-        playerHp: newHp,
-        player: newPlayer,
-        use: newUse,
-      });
-    } else {
-      switch (e.target.id) {
-        case "buff":
-          if (newUse.includes(buff)) {
-            newUse.splice(newUse.indexOf(buff), 1);
-          }
-          break;
-        case "swift":
-          if (newUse.includes(swift)) {
-            newUse.splice(newUse.indexOf(swift), 1);
-          }
-          break;
-        default:
-          break;
-      }
-      this.setState({
-        player: newPlayer,
-        use: newUse,
-      });
+          this.removeItem(heal);
+        } else {
+          this.updateConsole("Full health.");
+        }
+        break;
+      case "buff":
+        if(newUse.includes(buff)){
+          newUse.splice(e.target.id, 1);
+        }else{
+          newUse.splice(e.target.id, 0, buff);
+        }
+        break;
+      case "swift":
+        if(newUse.includes(swift)){
+          newUse.splice(e.target.id, 1);
+        }else{
+          newUse.splice(e.target.id, 0, swift);
+        }
+        break;
+      default:
+        break;
     }
+    this.setState({
+      playerHp: newHp,
+      player: newPlayer,
+      use: newUse,
+    });
+    
+
   };
   resetEnemies = () => {
     enemies.map((val, ind) => {
@@ -302,6 +320,7 @@ class battle extends Component {
         player: newPlayer,
         enemy: enemies[newLevel],
         console: [],
+        use: [],
       },
       () => {
         this.updateConsole(`Level ${this.state.level + 1}!`);
@@ -362,10 +381,21 @@ class battle extends Component {
     // }
   };
   keepFighting = () => {
+    console.log("click");
     let level = this.state.level;
     level++;
+    if (this.state.win) {
+      level = 0;
+      this.resetEnemies();
+      this.setState({
+        win: false,
+        level: level,
+      });
+    }
 
+    console.log(enemies.length);
     if (enemies[level]) {
+      console.log("enemy yes");
       let newPlayer = this.state.player;
       newPlayer.exp += this.state.enemy.exp;
       newPlayer.avatar = newPlayer.default;
@@ -377,13 +407,28 @@ class battle extends Component {
         case newPlayer.exp >= 150 && newPlayer.lvl < 5:
         case newPlayer.exp >= 200 && newPlayer.lvl < 6:
         case newPlayer.exp >= 250 && newPlayer.lvl < 7:
+        case newPlayer.exp >= 300 && newPlayer.lvl < 8:
+        case newPlayer.exp >= 350 && newPlayer.lvl < 9:
+        case newPlayer.exp >= 400 && newPlayer.lvl < 10:
+        case newPlayer.exp >= 450 && newPlayer.lvl < 11:
+        case newPlayer.exp >= 500 && newPlayer.lvl < 12:
+        case newPlayer.exp >= 550 && newPlayer.lvl < 13:
+        case newPlayer.exp >= 600 && newPlayer.lvl < 14:
+        case newPlayer.exp >= 650 && newPlayer.lvl < 15:
+        case newPlayer.exp >= 700 && newPlayer.lvl < 16:
+        case newPlayer.exp >= 750 && newPlayer.lvl < 17:
           if (newPlayer.lvl % 2 === 0 && newPlayer.items.length < 3) {
+            console.log("get item");
             let newState = {
               player: newPlayer,
               selectItem: true,
             };
-            this.setState(newState);
+            this.setState(newState, () => {
+              console.log("state set");
+            });
           } else {
+            console.log("level up");
+
             let newState = {
               player: newPlayer,
               levelUp: true,
@@ -392,6 +437,7 @@ class battle extends Component {
           }
           break;
         default:
+          console.log("defaulted");
           enemies[level].hp = enemies[level].str;
           this.setState(
             {
@@ -407,6 +453,7 @@ class battle extends Component {
           break;
       }
     } else {
+      console.log("not hre");
       this.setState({
         win: true,
       });
@@ -422,7 +469,7 @@ class battle extends Component {
 
   updateConsole = (newText) => {
     let newConsole = this.state.console;
-    if (newConsole.length > 4) {
+    if (newConsole.length > 1) {
       newConsole.shift();
     }
     newConsole.push(newText);
@@ -436,13 +483,16 @@ class battle extends Component {
     let itemEffect = 0;
     let newUse = [...use];
     let damage =
-      Math.floor(Math.random() * player.weapon.attackMax) +
-      player.weapon.attackMin;
+      Math.floor(
+        Math.random() * (player.weapon.attackMax - player.weapon.attackMin)
+      ) + player.weapon.attackMin;
+    console.log(use.includes(buff));
     if (use.includes(buff)) {
       for (let i = 0; i < newUse.length; i++) {
         if (newUse[i].name === "buff") {
           itemEffect += newUse[i].value;
           this.updateConsole("Buff applied.");
+          console.log("buff applied.");
           this.removeItem(newUse[i]);
         }
       }
@@ -455,8 +505,9 @@ class battle extends Component {
   enemyAttacks = () => {
     let { player, enemy } = this.state;
     let attack =
-      Math.floor(Math.random() * enemy.weapon.attackMax) +
-      enemy.weapon.attackMin;
+      Math.floor(
+        Math.random() * (enemy.weapon.attackMax - enemy.weapon.attackMin)
+      ) + enemy.weapon.attackMin;
     let { defense } = player.armor;
     console.log("Enemy attack " + attack + " - player defense " + defense);
     let dmg = attack - defense;
@@ -507,18 +558,7 @@ class battle extends Component {
                 //1 - timer to reset
                 clearTimeout(this.playerTimeout);
               }
-              this.playerTimeout = setTimeout(() => {
-                let newPlayer = this.state.player;
-                if (
-                  newPlayer.avatar !== dead &&
-                  newPlayer.avatar !== newPlayer.default
-                ) {
-                  newPlayer.avatar = newPlayer.default;
-                  this.setState({
-                    player: newPlayer,
-                  });
-                }
-              }, 100); //1 - end timer
+              this.playerTimeout = setTimeout(this.resetAvatar, 100); //1 - end timer
             }
           );
         }
@@ -536,18 +576,7 @@ class battle extends Component {
               //1 - set reset timer
               clearTimeout(this.playerTimeout);
             }
-            this.playerTimeout = setTimeout(() => {
-              let newPlayer = this.state.player;
-              if (
-                newPlayer.avatar !== dead &&
-                newPlayer.avatar !== newPlayer.default
-              ) {
-                newPlayer.avatar = newPlayer.default;
-                this.setState({
-                  player: newPlayer,
-                });
-              }
-            }, 10); //1 - end timer
+            this.playerTimeout = setTimeout(this.resetAvatar, 100); //1 - end timer
           }
         );
       }
@@ -566,18 +595,7 @@ class battle extends Component {
             //1 - reset timer
             clearTimeout(this.playerTimeout);
           }
-          this.playerTimeout = setTimeout(() => {
-            let newPlayer = this.state.player;
-            if (
-              newPlayer.avatar !== dead &&
-              newPlayer.avatar !== newPlayer.default
-            ) {
-              newPlayer.avatar = newPlayer.default;
-              this.setState({
-                player: newPlayer,
-              });
-            }
-          }, 100); //1 - end timer
+          this.playerTimeout = setTimeout(this.resetAvatar, 100); //1 - end timer
         }
       );
     }
@@ -625,18 +643,7 @@ class battle extends Component {
               //1 - timer to reset
               clearTimeout(this.playerTimeout);
             }
-            this.playerTimeout = setTimeout(() => {
-              let newPlayer = this.state.player;
-              if (
-                newPlayer.avatar !== dead &&
-                newPlayer.avatar !== newPlayer.default
-              ) {
-                newPlayer.avatar = newPlayer.default;
-                this.setState({
-                  player: newPlayer,
-                });
-              }
-            }, 100); //1 - end timer
+            this.playerTimeout = setTimeout(this.resetAvatar, 100); //1 - end timer
           }
         );
       }
@@ -654,23 +661,29 @@ class battle extends Component {
             //1 - set reset timer
             clearTimeout(this.playerTimeout);
           }
-          this.playerTimeout = setTimeout(() => {
-            let newPlayer = this.state.player;
-            if (
-              newPlayer.avatar !== dead &&
-              newPlayer.avatar !== newPlayer.default
-            ) {
-              newPlayer.avatar = newPlayer.default;
-              this.setState({
-                player: newPlayer,
-              });
-            }
-          }, 10); //1 - end timer
+          this.playerTimeout = setTimeout(this.resetAvatar, 100); //1 - end timer
         }
       );
     }
   };
-
+  resetEnemy = () => {
+    let newEnemy = this.state.enemy;
+    if (newEnemy.image !== dead && newEnemy.image !== newEnemy.default) {
+      newEnemy.image = newEnemy.default;
+      this.setState({
+        enemy: newEnemy,
+      });
+    }
+  };
+  resetAvatar = () => {
+    let newPlayer = this.state.player;
+    if (newPlayer.avatar !== dead && newPlayer.avatar !== newPlayer.default) {
+      newPlayer.avatar = newPlayer.default;
+      this.setState({
+        player: newPlayer,
+      });
+    }
+  };
   attack = () => {
     if (!this.state.attacking) {
       this.setState(
@@ -701,13 +714,13 @@ class battle extends Component {
           let playerRoll = this.rollDice(3, 1, 6);
           let enemyRoll = this.rollDice(3, 1, 6);
 
-          let enemyHits = enemyRoll < enemy.dex;
-          let playerHits = playerRoll < player.dex + bonus;
-          console.log("enemyRoll " + enemyRoll + " < " + enemy.dex + " = ");
+          let enemyHits = enemyRoll <= enemy.dex;
+          let playerHits = playerRoll <= player.dex + bonus;
+          console.log("enemyRoll " + enemyRoll + " <= " + enemy.dex + " = ");
           console.log("enemyHits= " + enemyHits);
 
           console.log(
-            "playerRoll " + playerRoll + " < " + (player.dex + bonus) + " = "
+            "playerRoll " + playerRoll + " <= " + (player.dex + bonus) + " = "
           );
           console.log("playerHits= " + playerHits);
 
@@ -752,18 +765,7 @@ class battle extends Component {
                         if (this.enemyTimeout) {
                           clearTimeout(this.enemyTimeout);
                         }
-                        this.enemyTimeout = setTimeout(() => {
-                          let newEnemy = this.state.enemy;
-                          if (
-                            newEnemy.image !== dead &&
-                            newEnemy.image !== newEnemy.default
-                          ) {
-                            newEnemy.image = newEnemy.default;
-                            this.setState({
-                              enemy: newEnemy,
-                            });
-                          }
-                        }, 100); //1 - end set timer
+                        this.enemyTimeout = setTimeout(this.resetEnemy, 100); //1 - end set timer
 
                         //1 - enemy counters
                         if (enemyHits) {
@@ -802,18 +804,10 @@ class battle extends Component {
                                     //1 - timer to reset
                                     clearTimeout(this.playerTimeout);
                                   }
-                                  this.playerTimeout = setTimeout(() => {
-                                    let newPlayer = this.state.player;
-                                    if (
-                                      newPlayer.avatar !== dead &&
-                                      newPlayer.avatar !== newPlayer.default
-                                    ) {
-                                      newPlayer.avatar = newPlayer.default;
-                                      this.setState({
-                                        player: newPlayer,
-                                      });
-                                    }
-                                  }, 100); //1 - end timer
+                                  this.playerTimeout = setTimeout(
+                                    this.resetAvatar,
+                                    100
+                                  ); //1 - end timer
                                 }
                               );
                             }
@@ -831,18 +825,10 @@ class battle extends Component {
                                   //1 - set reset timer
                                   clearTimeout(this.playerTimeout);
                                 }
-                                this.playerTimeout = setTimeout(() => {
-                                  let newPlayer = this.state.player;
-                                  if (
-                                    newPlayer.avatar !== dead &&
-                                    newPlayer.avatar !== newPlayer.default
-                                  ) {
-                                    newPlayer.avatar = newPlayer.default;
-                                    this.setState({
-                                      player: newPlayer,
-                                    });
-                                  }
-                                }, 10); //1 - end timer
+                                this.playerTimeout = setTimeout(
+                                  this.resetAvatar,
+                                  100
+                                ); //1 - end timer
                               }
                             );
                           }
@@ -861,18 +847,10 @@ class battle extends Component {
                                 //1 - reset timer
                                 clearTimeout(this.playerTimeout);
                               }
-                              this.playerTimeout = setTimeout(() => {
-                                let newPlayer = this.state.player;
-                                if (
-                                  newPlayer.avatar !== dead &&
-                                  newPlayer.avatar !== newPlayer.default
-                                ) {
-                                  newPlayer.avatar = newPlayer.default;
-                                  this.setState({
-                                    player: newPlayer,
-                                  });
-                                }
-                              }, 100); //1 - end timer
+                              this.playerTimeout = setTimeout(
+                                this.resetAvatar,
+                                100
+                              ); //1 - end timer
                             }
                           );
                         }
@@ -893,18 +871,7 @@ class battle extends Component {
                       if (this.enemyTimeout) {
                         clearTimeout(this.enemyTimeout);
                       }
-                      this.enemyTimeout = setTimeout(() => {
-                        let newEnemy = this.state.enemy;
-                        if (
-                          newEnemy.image !== dead &&
-                          newEnemy.image !== newEnemy.default
-                        ) {
-                          newEnemy.image = newEnemy.default;
-                          this.setState({
-                            enemy: newEnemy,
-                          });
-                        }
-                      }, 100); //1 - end set timer
+                      this.enemyTimeout = setTimeout(this.resetEnemy, 100); //1 - end set timer
                       //1 - enemy counters
                       if (enemyHits) {
                         //1 - enemy makes contact
@@ -942,18 +909,10 @@ class battle extends Component {
                                   //1 - timer to reset
                                   clearTimeout(this.playerTimeout);
                                 }
-                                this.playerTimeout = setTimeout(() => {
-                                  let newPlayer = this.state.player;
-                                  if (
-                                    newPlayer.avatar !== dead &&
-                                    newPlayer.avatar !== newPlayer.default
-                                  ) {
-                                    newPlayer.avatar = newPlayer.default;
-                                    this.setState({
-                                      player: newPlayer,
-                                    });
-                                  }
-                                }, 100); //1 - end timer
+                                this.playerTimeout = setTimeout(
+                                  this.resetAvatar,
+                                  100
+                                ); //1 - end timer
                               }
                             );
                           }
@@ -971,18 +930,10 @@ class battle extends Component {
                                 //1 - set reset timer
                                 clearTimeout(this.playerTimeout);
                               }
-                              this.playerTimeout = setTimeout(() => {
-                                let newPlayer = this.state.player;
-                                if (
-                                  newPlayer.avatar !== dead &&
-                                  newPlayer.avatar !== newPlayer.default
-                                ) {
-                                  newPlayer.avatar = newPlayer.default;
-                                  this.setState({
-                                    player: newPlayer,
-                                  });
-                                }
-                              }, 10); //1 - end timer
+                              this.playerTimeout = setTimeout(
+                                this.resetAvatar,
+                                100
+                              ); //1 - end timer
                             }
                           );
                         }
@@ -1001,18 +952,10 @@ class battle extends Component {
                               //1 - reset timer
                               clearTimeout(this.playerTimeout);
                             }
-                            this.playerTimeout = setTimeout(() => {
-                              let newPlayer = this.state.player;
-                              if (
-                                newPlayer.avatar !== dead &&
-                                newPlayer.avatar !== newPlayer.default
-                              ) {
-                                newPlayer.avatar = newPlayer.default;
-                                this.setState({
-                                  player: newPlayer,
-                                });
-                              }
-                            }, 100); //1 - end timer
+                            this.playerTimeout = setTimeout(
+                              this.resetAvatar,
+                              100
+                            ); //1 - end timer
                           }
                         );
                       }
@@ -1021,7 +964,6 @@ class battle extends Component {
                 }
               } else {
                 this.updateConsole("Player misses.");
-                let oldImage = enemy.default;
                 if (enemy.image !== missed) {
                   enemy.image = missed;
                 }
@@ -1031,15 +973,7 @@ class battle extends Component {
                   if (this.enemyTimeout) {
                     clearTimeout(this.enemyTimeout);
                   }
-                  this.enemyTimeout = setTimeout(() => {
-                    if (enemy.image !== oldImage && enemy.image !== dead) {
-                      enemy.image = oldImage;
-                    }
-
-                    this.setState({
-                      enemy: enemy,
-                    });
-                  }, 100); //1 - end timer
+                  this.enemyTimeout = setTimeout(this.resetEnemy, 100); //1 - end timer
                   //1 - enemy counters
                   if (enemyHits) {
                     //1 - enemy makes contact
@@ -1077,18 +1011,10 @@ class battle extends Component {
                               //1 - timer to reset
                               clearTimeout(this.playerTimeout);
                             }
-                            this.playerTimeout = setTimeout(() => {
-                              let newPlayer = this.state.player;
-                              if (
-                                newPlayer.avatar !== dead &&
-                                newPlayer.avatar !== newPlayer.default
-                              ) {
-                                newPlayer.avatar = newPlayer.default;
-                                this.setState({
-                                  player: newPlayer,
-                                });
-                              }
-                            }, 100); //1 - end timer
+                            this.playerTimeout = setTimeout(
+                              this.resetAvatar,
+                              100
+                            ); //1 - end timer
                           }
                         );
                       }
@@ -1106,18 +1032,10 @@ class battle extends Component {
                             //1 - set reset timer
                             clearTimeout(this.playerTimeout);
                           }
-                          this.playerTimeout = setTimeout(() => {
-                            let newPlayer = this.state.player;
-                            if (
-                              newPlayer.avatar !== dead &&
-                              newPlayer.avatar !== newPlayer.default
-                            ) {
-                              newPlayer.avatar = newPlayer.default;
-                              this.setState({
-                                player: newPlayer,
-                              });
-                            }
-                          }, 10); //1 - end timer
+                          this.playerTimeout = setTimeout(
+                            this.resetAvatar,
+                            100
+                          ); //1 - end timer
                         }
                       );
                     }
@@ -1136,13 +1054,7 @@ class battle extends Component {
                           //1 - reset timer
                           clearTimeout(this.playerTimeout);
                         }
-                        this.playerTimeout = setTimeout(() => {
-                          let newPlayer = this.state.player;
-                          newPlayer.avatar = newPlayer.default;
-                          this.setState({
-                            player: newPlayer,
-                          });
-                        }, 100); //1 - end timer
+                        this.playerTimeout = setTimeout(this.resetAvatar, 100); //1 - end timer
                       }
                     );
                   }
@@ -1176,13 +1088,7 @@ class battle extends Component {
                           //2 - timer to reset
                           clearTimeout(this.playerTimeout);
                         }
-                        this.playerTimeout = setTimeout(() => {
-                          let newPlayer = this.state.player;
-                          newPlayer.avatar = newPlayer.default;
-                          this.setState({
-                            player: newPlayer,
-                          });
-                        }, 100); //2 - end timer
+                        this.playerTimeout = setTimeout(this.resetAvatar, 100); //2 - end timer
                         //2 - player counters
                         if (playerHits) {
                           //2 - player makes contact
@@ -1218,18 +1124,10 @@ class battle extends Component {
                                   if (this.enemyTimeout) {
                                     clearTimeout(this.enemyTimeout);
                                   }
-                                  this.enemyTimeout = setTimeout(() => {
-                                    let newEnemy = this.state.enemy;
-                                    if (
-                                      newEnemy.image !== dead &&
-                                      newEnemy.image !== newEnemy.default
-                                    ) {
-                                      newEnemy.image = newEnemy.default;
-                                      this.setState({
-                                        enemy: newEnemy,
-                                      });
-                                    }
-                                  }, 100); //2 - end set timer
+                                  this.enemyTimeout = setTimeout(
+                                    this.resetEnemy,
+                                    100
+                                  ); //2 - end set timer
                                 }
                               );
                             }
@@ -1247,24 +1145,15 @@ class battle extends Component {
                                 if (this.enemyTimeout) {
                                   clearTimeout(this.enemyTimeout);
                                 }
-                                this.enemyTimeout = setTimeout(() => {
-                                  let newEnemy = this.state.enemy;
-                                  if (
-                                    newEnemy.image !== dead &&
-                                    newEnemy.image !== newEnemy.default
-                                  ) {
-                                    newEnemy.image = newEnemy.default;
-                                    this.setState({
-                                      enemy: newEnemy,
-                                    });
-                                  }
-                                }, 100); //2 - end set timer
+                                this.enemyTimeout = setTimeout(
+                                  this.resetEnemy,
+                                  100
+                                ); //2 - end set timer
                               }
                             );
                           }
                         } else {
                           this.updateConsole("Player misses.");
-                          let oldImage = enemy.default;
                           if (enemy.image !== missed) {
                             enemy.image = missed;
                           }
@@ -1274,17 +1163,10 @@ class battle extends Component {
                             if (this.enemyTimeout) {
                               clearTimeout(this.enemyTimeout);
                             }
-                            this.enemyTimeout = setTimeout(() => {
-                              if (
-                                enemy.image !== oldImage &&
-                                enemy.image !== dead
-                              ) {
-                                enemy.image = oldImage;
-                                this.setState({
-                                  enemy: enemy,
-                                });
-                              }
-                            }, 100); //2 - end timer
+                            this.enemyTimeout = setTimeout(
+                              this.resetEnemy,
+                              100
+                            ); //2 - end timer
                           });
                         }
                       }
@@ -1313,17 +1195,7 @@ class battle extends Component {
                       //2 - set timer
                       clearTimeout(this.playerTimeout);
                     }
-                    this.playerTimeout = setTimeout(() => {
-                      if (
-                        newPlayer.avatar !== dead &&
-                        newPlayer.avatar !== newPlayer.default
-                      ) {
-                        newPlayer.avatar = newPlayer.default;
-                        this.setState({
-                          player: newPlayer,
-                        });
-                      }
-                    }, 100); //2 - end timer
+                    this.playerTimeout = setTimeout(this.resetAvatar, 100); //2 - end timer
                     //2 - player counters
                     if (playerHits) {
                       //2 - player makes contact
@@ -1359,15 +1231,10 @@ class battle extends Component {
                               if (this.enemyTimeout) {
                                 clearTimeout(this.enemyTimeout);
                               }
-                              this.enemyTimeout = setTimeout(() => {
-                                let newEnemy = this.state.enemy;
-                                if (newEnemy.image !== dead) {
-                                  newEnemy.image = newEnemy.default;
-                                  this.setState({
-                                    enemy: newEnemy,
-                                  });
-                                }
-                              }, 100); //2 - end set timer
+                              this.enemyTimeout = setTimeout(
+                                this.resetEnemy,
+                                100
+                              ); //2 - end set timer
                             }
                           );
                         }
@@ -1385,24 +1252,15 @@ class battle extends Component {
                             if (this.enemyTimeout) {
                               clearTimeout(this.enemyTimeout);
                             }
-                            this.enemyTimeout = setTimeout(() => {
-                              let newEnemy = this.state.enemy;
-                              if (
-                                newEnemy.image !== dead &&
-                                newEnemy.image !== newEnemy.default
-                              ) {
-                                newEnemy.image = newEnemy.default;
-                                this.setState({
-                                  enemy: newEnemy,
-                                });
-                              }
-                            }, 100); //2 - end set timer
+                            this.enemyTimeout = setTimeout(
+                              this.resetEnemy,
+                              100
+                            ); //2 - end set timer
                           }
                         );
                       }
                     } else {
                       this.updateConsole("Player misses.");
-                      let oldImage = enemy.default;
                       if (enemy.image !== missed) {
                         enemy.image = missed;
                       }
@@ -1412,17 +1270,7 @@ class battle extends Component {
                         if (this.enemyTimeout) {
                           clearTimeout(this.enemyTimeout);
                         }
-                        this.enemyTimeout = setTimeout(() => {
-                          if (
-                            enemy.image !== oldImage &&
-                            enemy.image !== dead
-                          ) {
-                            enemy.image = oldImage;
-                            this.setState({
-                              enemy: enemy,
-                            });
-                          }
-                        }, 100); //2 - end timer
+                        this.enemyTimeout = setTimeout(this.resetEnemy, 100); //2 - end timer
                       });
                     }
                   });
@@ -1430,8 +1278,6 @@ class battle extends Component {
               } else {
                 this.updateConsole("Enemy misses.");
                 let newPlayer = this.state.player;
-
-                let oldImage = newPlayer.default;
 
                 newPlayer.avatar = missed;
 
@@ -1441,15 +1287,7 @@ class battle extends Component {
                     //2 - set timer
                     clearTimeout(this.playerTimeout);
                   }
-                  this.playerTimeout = setTimeout(() => {
-                    if (
-                      newPlayer.avatar !== oldImage &&
-                      newPlayer.avatar !== dead
-                    ) {
-                      newPlayer.avatar = oldImage;
-                    }
-                    this.setState({ player: newPlayer });
-                  }, 100); //2 - end timer
+                  this.playerTimeout = setTimeout(this.resetAvatar, 100); //2 - end timer
 
                   //2 - player counters
                   if (playerHits) {
@@ -1486,18 +1324,10 @@ class battle extends Component {
                             if (this.enemyTimeout) {
                               clearTimeout(this.enemyTimeout);
                             }
-                            this.enemyTimeout = setTimeout(() => {
-                              let newEnemy = this.state.enemy;
-                              if (
-                                newEnemy.image !== dead &&
-                                newEnemy.image !== newEnemy.default
-                              ) {
-                                newEnemy.image = newEnemy.default;
-                                this.setState({
-                                  enemy: newEnemy,
-                                });
-                              }
-                            }, 100); //2 - end set timer
+                            this.enemyTimeout = setTimeout(
+                              this.resetEnemy,
+                              100
+                            ); //2 - end set timer
                           }
                         );
                       }
@@ -1515,24 +1345,12 @@ class battle extends Component {
                           if (this.enemyTimeout) {
                             clearTimeout(this.enemyTimeout);
                           }
-                          this.enemyTimeout = setTimeout(() => {
-                            let newEnemy = this.state.enemy;
-                            if (
-                              newEnemy.image !== dead &&
-                              newEnemy.image !== newEnemy.default
-                            ) {
-                              newEnemy.image = newEnemy.default;
-                              this.setState({
-                                enemy: newEnemy,
-                              });
-                            }
-                          }, 100); //2 - end set timer
+                          this.enemyTimeout = setTimeout(this.resetEnemy, 100); //2 - end set timer
                         }
                       );
                     }
                   } else {
                     this.updateConsole("Player misses.");
-                    let oldImage = enemy.default;
                     if (enemy.image !== missed) {
                       enemy.image = missed;
                     }
@@ -1542,15 +1360,7 @@ class battle extends Component {
                       if (this.enemyTimeout) {
                         clearTimeout(this.enemyTimeout);
                       }
-                      this.enemyTimeout = setTimeout(() => {
-                        if (enemy.image !== oldImage && enemy.image !== dead) {
-                          enemy.image = oldImage;
-                        }
-
-                        this.setState({
-                          enemy: enemy,
-                        });
-                      }, 100); //2 - end timer
+                      this.enemyTimeout = setTimeout(this.resetEnemy, 100); //2 - end timer
                     });
                   }
                 });
@@ -1568,78 +1378,134 @@ class battle extends Component {
 
   render() {
     return (
-      <div style={{ height: "100vh" }}>
+      <div className="scene">
         {this.state.levelUp ? (
           <div className="modal">
             <h2>Level Up!</h2>
             <div className="modal-content">
               <div>Increase a stat</div>
               <div>
-                <button name="str" onClick={this.levelUp}>
+                <button
+                  className="btn btn-success border"
+                  name="str"
+                  onClick={this.levelUp}
+                >
                   Str
                 </button>
 
-                <button name="dex" onClick={this.levelUp}>
+                <button
+                  className="btn btn-success border"
+                  name="dex"
+                  onClick={this.levelUp}
+                >
                   Dex
                 </button>
               </div>
             </div>
           </div>
         ) : (
-          <div></div>
-        )}
+            ""
+          )}
         {this.state.selectItem ? (
           <div className="modal">
             <h2>Level Up!</h2>
             <div className="modal-content">
               <div>Select an Item</div>
               <div>
-                <button name="heal" onClick={this.addItem}>
+                <button
+                  className="btn btn-success border"
+                  name="heal"
+                  onClick={this.addItem}
+                >
                   heal
                 </button>
 
-                <button name="buff" onClick={this.addItem}>
+                <button
+                  className="btn btn-success border"
+                  name="buff"
+                  onClick={this.addItem}
+                >
                   buff
                 </button>
 
-                <button name="swift" onClick={this.addItem}>
+                <button
+                  className="btn btn-success border"
+                  name="swift"
+                  onClick={this.addItem}
+                >
                   swift
                 </button>
               </div>
             </div>
           </div>
         ) : (
-          <div></div>
-        )}
-        <h2>Battle</h2>
-        {this.state.playerHp <= 0 ? (
-          <div>
-            <button onClick={this.tryAgain}>Try Again</button>
-            <button onClick={this.props.startOver}>Reset Character</button>
+            ""
+          )}
+        {this.state.askToSave ? (
+          <div className="modal">
+            <h2>Level Up!</h2>
+            <div className="modal-content">
+              <div>Would you like to save this checkpoint to LocalStorage?</div>
+
+              <div>
+                <button
+                  className="btn btn-success border"
+                  name="true"
+                  onClick={this.save}
+                >
+                  Yes
+                </button>
+                <button
+                  className="btn btn-success border"
+                  name="false"
+                  onClick={this.save}
+                >
+                  No
+                </button>
+              </div>
+            </div>
           </div>
-        ) : this.state.enemy.hp <= 0 ? (
-          <button onClick={this.keepFighting}>Keep Fighting</button>
         ) : (
-          ""
-        )}
-        <div>
-          <h2>Enemy</h2>
-          <div
-            style={{
-              margin: "0 auto",
-              backgroundColor: "red",
-              height: "100%",
-              width: `${(this.state.enemy.hp / this.state.enemy.str) * 100}%`,
-            }}
-          >
-            HP
+            ""
+          )}
+
+        {this.state.win ? (
+          <div className="modal">
+            <div className="modal-content">YOU WIN!!!!</div>
+            <button
+              className="btn btn-success border"
+              onClick={this.props.startOver}
+            >
+              Play again
+            </button>
+            <div className="secret" onClick={this.keepFighting}>
+              New Game +
+            </div>
           </div>
-          <img
-            className="avatarImage"
-            alt="enemy avatar"
-            src={this.state.enemy.image}
-          ></img>
-          <table>
+        ) : (
+            ""
+          )}
+        <img id="background" src={battlescene} />
+        <div id="battleArea">
+          <h2 className="selectTitle">Battle</h2>
+          <h2 className="selectTitle">Enemy #{this.state.level + 1}</h2>
+          <h5 className="selectTitle">{this.state.enemy.name}</h5>
+          <div id="enemyTable">
+            <div
+              className="hpbar"
+              style={{
+                width: `${(this.state.enemy.hp / this.state.enemy.str) * 100}%`,
+              }}
+            >
+              HP
+            </div>
+            <img
+              style={{ height: "25vh" }}
+              alt="enemy avatar"
+              src={this.state.enemy.image}
+            ></img>
+          </div>
+          {/* <table>
             <thead>
               <tr>
                 <th>HP:</th>
@@ -1650,109 +1516,181 @@ class battle extends Component {
               </tr>
             </thead>
             <tbody>
-              <tr>       
-              <td>{this.state.enemy.hp}</td>
-              <td>{this.state.enemy.str}</td>
-              <td>{this.state.enemy.dex}</td>
-              <td>{this.state.enemy.weapon.name}</td>
-              <td>{this.state.enemy.armor.name}</td></tr>
+              <tr>
+                <td>{this.state.enemy.hp}</td>
+                <td>{this.state.enemy.str}</td>
+                <td>{this.state.enemy.dex}</td>
+                <td>
+                  <img
+                    alt={this.state.enemy.weapon.name}
+                    src={this.state.enemy.weapon.img}
+                  ></img>
+                </td>
+                <td>
+                  <img
+                    alt={this.state.enemy.armor.name}
+                    src={this.state.enemy.armor.img}
+                  ></img>
+                </td>
+              </tr>
             </tbody>
-          </table>
-        </div>
-        <div>
-          {this.state.console.map((val, ind) => {
-            return <div key={ind}>{val}</div>;
-          })}
-        </div>
+          </table> */}
 
-        <div>
-          {this.state.playerHp <= 0 || this.state.enemy.hp <= 0 ? (
-            " "
-          ) : (
-            <div>
-              <button onClick={this.attack}>Attack</button>
-              <button onClick={this.defend}>Defend</button>
-              <button onClick={this.dodge}>Dodge</button>
-              {this.state.player.items.length ? (
-                <div>
-                  <div>Apply items:</div>
-                  {this.state.player.items.map((val, ind) => {
-                    return (
-                      <div>
-                        <label>{val.name}</label>
-                        <input
-                          type="checkbox"
-                          id={val.name}
-                          onClick={this.applyItem}
-                        ></input>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                ""
-              )}
-            </div>
-          )}
-        </div>
-        <div id="playerTable">
           <div>
-            <div>
-              <div>
-                <div>Lvl {this.state.player.lvl + 1}</div>
-                <div
-                  style={{
-                    margin: "0 auto",
-                    backgroundColor: "red",
-                    height: "100%",
-                    width: `${
-                      (this.state.playerHp / this.state.player.str) * 100
-                    }%`,
-                  }}
-                >
-                  HP
+            {this.state.console.map((val, ind) => {
+              return (
+                <div className="selectTitle" key={ind}>
+                  {val}
                 </div>
-
-                <img
-                  className="avatarImage"
-                  id="player"
-                  alt="Player avatar"
-                  src={this.state.player.avatar}
-                ></img>
+              );
+            })}
+          </div>
+          <div>
+            {this.state.playerHp <= 0 || this.state.enemy.hp <= 0 ? (
+              ""
+            ) : (
+                <div>
+                  <button
+                    className="btn btn-success border"
+                    onClick={this.attack}
+                  >
+                    Attack
+                </button>
+                  <button
+                    className="btn btn-success border"
+                    onClick={this.defend}
+                  >
+                    Defend
+                </button>
+                  <button className="btn btn-success border" onClick={this.dodge}>
+                    Dodge
+                </button>
+                </div>
+              )}
+            {this.state.playerHp <= 0 ? (
+              <div>
+                <button
+                  className="btn btn-success border"
+                  onClick={this.tryAgain}
+                >
+                  Try Again
+                </button>
+                <button
+                  className="btn btn-success border"
+                  onClick={this.props.startOver}
+                >
+                  Reset Character
+                </button>
               </div>
-              <table>
+            ) : this.state.enemy.hp <= 0 ? (
+              <button
+                className="btn btn-success border"
+                onClick={this.keepFighting}
+              >
+                Keep Fighting
+              </button>
+            ) : (
+                  ""
+                )}
+          </div>
+
+          <div id="playerTable">
+            <div id="playerImage">
+              <div
+                className="hpbar  "
+                style={{
+                  width: `${
+                    (this.state.playerHp / this.state.player.str) * 100
+                    }%`,
+                }}
+              >
+                HP
+              </div>
+
+              <img
+                id="player"
+                alt="Player avatar"
+                src={this.state.player.avatar}
+              ></img>
+            </div>
+            {(
+              <table id="items">
                 <thead>
                   <tr>
-                    
-                    <th>HP:</th>
-                    <th>Str:</th>
-                    <th>Dex:</th>
-                    <th>Weapon:</th>
-                    <th>Armor:</th>
+                  <th>Apply items:</th>
+
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>{this.state.playerHp}</td>
-                    <td>{this.state.player.str}</td>
-                    <td>{this.state.player.dex}</td>
-                    <td>{this.state.player.weapon.name}</td>
-                    <td>{this.state.player.armor.name}</td>
-                  </tr>
+                 
+                  {this.state.player.items.map((val, ind) => {
+                    console.log(this.state.use)
+                    console.log(ind)  
+
+                    return (
+                      <tr key={ind}>
+                        <td>
+                        {val.name}<br/>
+
+                          <button
+                            type="button"
+                            key={ind}
+                            id={ind}
+                            style={{
+                                backgroundImage: `url(${val.img})`,
+                                backgroundSize: "40px 40px",
+                                height: "44px",  
+                                width: "44px"
+                              }}
+                            data-name={val.name}
+                            onClick={this.applyItem}
+                          >
+                            {ind < this.state.use.length && this.state.use[ind].name == val.name ?
+                            "✓" : "" }
+                          </button>
+
+
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
-            </div>
+            )}
+            <table>
+              <thead>
+                <tr>
+                  <th>HP:</th>
+                  <th>Str:</th>
+                  <th>Dex:</th>
+                  <th>Weapon:</th>
+                  <th>Armor:</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{this.state.playerHp}</td>
+                  <td>{this.state.player.str}</td>
+                  <td>{this.state.player.dex}</td>
+                  <td>
+                    <img
+                      alt={this.state.player.weapon.name}
+                      src={this.state.player.weapon.img}
+                    ></img>
+                  </td>
+                  <td>
+                    <img
+                      alt={this.state.player.armor.name}
+                      src={this.state.player.armor.img}
+                    ></img>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table></table>
           </div>
         </div>
-
-        {this.state.win ? (
-          <div className="modal">
-            <div className="modal-content">YOU WIN!!!!</div>
-            <button onClick={this.props.startOver}>Play again</button>
-          </div>
-        ) : (
-          ""
-        )}
       </div>
     );
   }

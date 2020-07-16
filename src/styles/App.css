@@ -1,22 +1,180 @@
 * {
   font-family: monospace;
+  font-size: medium;
+  color: black;
 }
-playerTable {
-  bottom: 0;
+html {
+  width: auto;
+  height: 100vh;
+}
+
+.scene {
+  position: relative;
+  background-color: #92AD60;
+}
+
+#background {
+  margin: 0 auto;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  z-index: -1;
+  object-fit: scale-down;
+  
+}
+.button {
+  margin: 0 auto;
+  z-index: 1;
+  background-color: #92AD40;
+  padding: 5px;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+#loadButton {
+  float: left;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  z-index: 1;
+  background-color: #92AD40;
+  padding: 5px;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+#startButton {
+  float: left;
+  position: absolute;
+  left: 50vw;
+  top: 50vh;
+  z-index: 1;
+  background-color: #92AD40;
+  padding: 5px;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+#title{
+  float: left;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: -1;
+  background-color: #92AD40;
+  padding: 5px;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+#selectArea {
   position: fixed;
+  top: 15vh;
+  z-index: 1;
+  margin: 0 auto;
+  background-color: transparent;
+  color: #FFFFFF;
+  font-weight: bold;
+  width: 100vw;
+}
+
+.selectTitle{
+  margin: 0;
+  font-weight: bolder;
+  color: black;
+  background-color: rgba(255, 255, 255, .75);
+  width: 100%;
+}
+
+.selectArea {
+  
+  display: flex;
+  
+}
+.selectArea div{
+  margin: 0 auto;
+}
+table,th,td{
+  border: 1px solid black;
+  font-weight: bolder;
+  color: black;
+  background-color: rgba(255, 255, 255, .75);
+  
+}
+
+.secret {
+  background-color: rgba(211, 177, 177, 1);
+  color: rgba(211, 177, 177, 1);
+}
+
+.secret:hover {
+  background-color: green;
+  color: black;
+}
+
+#enemyTable {
+  display: inline-block;
+}
+
+#items {
+  display: inherit;
+  margin: 0 auto;
+  position: fixed; 
+}
+#playerTable {
+  display: inline-block;
+  justify-content: left;
+  bottom: 0;
+  position: relative;
   height: 25vh;
+}
+
+#playerImage {
+ display: inherit;
+}
+
+
+.imageBox{
+  float: left;
+  margin: 0;
+
+}
+.imageBox img {
+  display: block;
+  height: 25vh;
+  width: auto;
 }
 table {
   margin: 0 auto;
 }
+.hpbar{
+  border: 1px solid black;
+  border-radius: 5%;
+  text-align: left;
+  background-color: red;
+  z-index: 1;
+}
+#battleArea {
+  display: block;
+  position: fixed; /* Stay in place */
+  z-index: 2; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100vh; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+
+}
+#player {
+  height: 25vh;
+}
+
 .avatarImage {
+  position: relative;
   height: 25vh;
   width: auto;
-  margin: 0 1vw;
+  margin: 0 1rem;
 }
 .modal {
+  display: block;
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 3; /* Sit on top */
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
