@@ -133,7 +133,7 @@ class battle extends Component {
       level: this.props.level ? this.props.level : 0,
       playerHp: this.props.player.str,
       player: Object.assign({}, this.props.player),
-      enemy: enemies[0],
+      enemy: enemies[this.props.level],
       console: [],
     };
   }
