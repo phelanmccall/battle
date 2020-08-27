@@ -168,19 +168,12 @@ class App extends Component {
     let itemsPass = true;
 
     for(let i in player.weapon){
-
-      console.log(i);
-      console.log(player.weapon[i] === items[player.weapon.name][i]);
       equipmentPass = player.weapon[i] === items[player.weapon.name][i];
       if(!equipmentPass){
         break;
       }
     }
     for(let i in player.armor){
-      console.log(i);
-
-      console.log(player.armor[i] === items[player.armor.name][i]);
-
       equipmentPass = player.armor[i] === items[player.armor.name][i];
       if(!equipmentPass){
         break;
@@ -191,9 +184,7 @@ class App extends Component {
     for(let i in player.items){
 
       for(let k in player.items[i]){
-        console.log(k);
-        console.log(player.items[i][k]);
-        console.log(items[player.items[i].name][k]);
+
 
         itemsPass = player.items[i][k] === items[player.items[i].name][k];
         if(!itemsPass){
@@ -207,9 +198,7 @@ class App extends Component {
     if(player.items.length > 3){
       player.items.splice(3);
     }
-    console.log(equipmentPass);
-    console.log(itemsPass);
-    console.log(equipmentPass && itemsPass);
+
 
     return equipmentPass && itemsPass;
   }
@@ -220,7 +209,6 @@ class App extends Component {
       if(localStorage.checkpoint){
         let checkpoint = JSON.parse(localStorage.checkpoint);
         let playerCheck = this.checkPlayer(checkpoint.player);
-        console.log(playerCheck);
         if(playerCheck){
           this.setState({
             player: checkpoint.player,

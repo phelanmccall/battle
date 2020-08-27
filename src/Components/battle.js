@@ -113,13 +113,11 @@ let enemies = [
 class battle extends Component {
   constructor(props) {
     super(props);
-    console.log("Constructing " + this.props.player.lvl);
     // let total = 0;
     // enemies.map((val) => {
     //   total += val.exp;
     //   return 0;
     // });
-    // console.log(total);
     // this.resetEnemies();
     this.state = {
       save: false,
@@ -133,7 +131,7 @@ class battle extends Component {
       level: this.props.level ? this.props.level : 0,
       playerHp: this.props.player.str,
       player: Object.assign({}, this.props.player),
-      enemy: enemies[this.props.level],
+      enemy: enemies[this.props.level ? this.props.level : 0],
       console: [],
     };
   }
@@ -145,7 +143,6 @@ class battle extends Component {
       total += val.exp;
       return 0;
     });
-    console.log(total);
     this.resetEnemies();
     this.updateConsole(`Level ${this.state.level + 1}!`);
     this.updateConsole(`Fight!`);
@@ -259,14 +256,12 @@ class battle extends Component {
     }
   };
   removeItem = (item) => {
-    console.log("removing... " + item.name);
     let newPlayer = this.state.player;
     let newUse = this.state.use;
 
     if (newPlayer.items.length) {
       let newItems = [...newPlayer.items];
-      console.log(newUse.indexOf(item));
-      console.log(newItems.indexOf(item));
+    
       newUse.splice(newUse.indexOf(item), 1);
       newItems.splice(newItems.findIndex(x => x.name === item.name), 1);
       newPlayer.items = newItems;
@@ -275,12 +270,7 @@ class battle extends Component {
         {
           player: newPlayer,
           use: newUse,
-        },
-        () => {
-          console.log(this.state.player.items.length);
-          console.log(this.state.use.length);
-        }
-      );
+        });
     }
   };
 
@@ -288,8 +278,7 @@ class battle extends Component {
     let newPlayer = this.state.player;
     let newHp = this.state.playerHp;
     let newUse = [...this.state.use];
-    console.log(e.target.id);
-    console.log(e.target.getAttribute("data-name"))
+    
     switch (e.target.getAttribute("data-name")) {
       case "heal":
         if (newHp < newPlayer.str) {
@@ -330,8 +319,6 @@ class battle extends Component {
       playerHp: newHp,
       player: newPlayer,
       use: newUse,
-    }, ()=>{
-      console.log(this.state.player.items)
     });
     
 
@@ -346,7 +333,6 @@ class battle extends Component {
   tryAgain = () => {
     let newLevel = this.state.checkpoint.level;
     let newPlayer = Object.assign({}, this.state.checkpoint.player);
-    console.log(newPlayer.exp);
     newPlayer.avatar = newPlayer.default;
     this.resetEnemies();
 
@@ -418,7 +404,6 @@ class battle extends Component {
     // }
   };
   keepFighting = () => {
-    console.log("click");
     let level = this.state.level;
     level++;
     if (this.state.win) {
@@ -430,9 +415,7 @@ class battle extends Component {
       });
     }
 
-    console.log(enemies.length);
     if (enemies[level]) {
-      console.log("enemy yes");
       let newPlayer = this.state.player;
       newPlayer.exp += this.state.enemy.exp;
       newPlayer.avatar = newPlayer.default;
@@ -455,16 +438,13 @@ class battle extends Component {
         case newPlayer.exp >= 700 && newPlayer.lvl < 16:
         case newPlayer.exp >= 750 && newPlayer.lvl < 17:
           if (newPlayer.lvl % 2 === 0 && newPlayer.items.length < 3) {
-            console.log("get item");
             let newState = {
               player: newPlayer,
               selectItem: true,
             };
             this.setState(newState, () => {
-              console.log("state set");
             });
           } else {
-            console.log("level up");
 
             let newState = {
               player: newPlayer,
@@ -474,7 +454,6 @@ class battle extends Component {
           }
           break;
         default:
-          console.log("defaulted");
           enemies[level].hp = enemies[level].str;
           this.setState(
             {
@@ -490,7 +469,6 @@ class battle extends Component {
           break;
       }
     } else {
-      console.log("not hre");
       this.setState({
         win: true,
       });
@@ -525,30 +503,23 @@ class battle extends Component {
       Math.floor(
         Math.random() * (player.weapon.attackMax - player.weapon.attackMin)
       ) + player.weapon.attackMin;
-    console.log(items);
     for(let i = 0; i < length; i++){
-      console.log(items[i].name + " " + items[i].use);
       if(items[i].use && items[i].name === "buff"){
         itemEffect += items[i].value;
         this.updateConsole("Buff applied.");  
-          console.log("buff applied.");
           this.removeItem(items[i]);
       }
-      console.log("LOG + " + i);
     }
-    //console.log(use.includes(buff));
     // if (use.includes(buff)) {
     //   for (let i = 0; i < newUse.length; i++) {
     //     if (newUse[i].name === "buff") {
     //       itemEffect += newUse[i].value;
     //       this.updateConsole("Buff applied.");
-    //       console.log("buff applied.");
     //       this.removeItem(newUse[i]);
     //     }
     //   }
     // }
     let { defense } = enemy.armor;
-    console.log("Player attack " + damage + " - enemy defense " + defense);
     let dmg = damage - defense;
     this.resetItems();
     return dmg > 0 ? dmg + itemEffect : 0 + itemEffect;
@@ -560,7 +531,6 @@ class battle extends Component {
         Math.random() * (enemy.weapon.attackMax - enemy.weapon.attackMin)
       ) + enemy.weapon.attackMin;
     let { defense } = player.armor;
-    console.log("Enemy attack " + attack + " - player defense " + defense);
     let dmg = attack - defense;
     return dmg > 0 ? dmg : 0;
   };
@@ -569,8 +539,7 @@ class battle extends Component {
     let { enemy } = this.state;
     let dif = enemy.dex;
     let die = this.rollDice(3, 1, 6);
-    console.log(die + " < " + dif + " = ");
-    console.log(die < dif);
+    
     let enemyHits = die < dif;
     //1 - enemy counters
     if (enemyHits) {
@@ -656,8 +625,7 @@ class battle extends Component {
     this.updateConsole("Player dodges.");
     let dif = enemy.dex - Math.floor(player.dex / 2);
     let die = this.rollDice(3, 1, 6);
-    console.log(die + " < " + dif + " = ");
-    console.log(die < dif);
+   
     let enemyHits = die < dif;
     //1 - enemy counters
     if (enemyHits) {
@@ -743,18 +711,15 @@ class battle extends Component {
         },
         () => {
           let { player, enemy, use } = this.state;
-          console.log(player.items.length);
-          console.log(use.length);
+          
           let itemEffect = 0;
           let length = player.items.length;
         let items = player.items;
 
           for(let i = 0; i < length; i++){
-            console.log(items[i].use && items[i].name === "swift");
             if(items[i].use && items[i].name === "swift"){
               itemEffect += items[i].value;
               this.updateConsole("swift applied.");
-                console.log("swift applied.");
                 this.removeItem(items[i]);
             }
           }
@@ -764,13 +729,7 @@ class battle extends Component {
 
           let enemyHits = enemyRoll <= enemy.dex;
           let playerHits = playerRoll <= player.dex + itemEffect;
-          console.log("enemyRoll " + enemyRoll + " <= " + enemy.dex + " = ");
-          console.log("enemyHits= " + enemyHits);
-
-          console.log(
-            "playerRoll " + playerRoll + " <= " + (player.dex + itemEffect) + " = "
-          );
-          console.log("playerHits= " + playerHits);
+          
 
           if (
             player.dex + player.armor.dex + itemEffect >
@@ -1426,7 +1385,6 @@ class battle extends Component {
   resetItems = () =>{
     let newItems = this.state.player.items;
     for(let item in newItems){
-      console.log(item);
       newItems[item].use = false;
     }
   }
