@@ -98,6 +98,17 @@ table,th,td{
   
 }
 
+#error{
+  position: fixed;
+  bottom: 0;
+  z-index: 1;
+  margin: 0 auto;
+  background-color: #f00;
+  color: #000;
+  font-weight: bold;
+  width: 100vw;
+}
+
 .secret {
   background-color: rgba(211, 177, 177, 1);
   color: rgba(211, 177, 177, 1);

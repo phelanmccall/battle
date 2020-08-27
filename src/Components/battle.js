@@ -195,19 +195,51 @@ class battle extends Component {
       }
     );
   };
+  clone = (obj) => {
+    let copy;
+    if(obj === null || typeof obj != "object") return obj;
+
+    
+    // Handle Date
+    if (obj instanceof Date) {
+      copy = new Date();
+      copy.setTime(obj.getTime());
+      return copy;
+  }
+
+  // Handle Array
+  if (obj instanceof Array) {
+      copy = [];
+      for (var i = 0, len = obj.length; i < len; i++) {
+          copy[i] = this.clone(obj[i]);
+      }
+      return copy;
+  }
+
+  // Handle Object
+  if (obj instanceof Object) {
+      copy = {};
+      for (var attr in obj) {
+          if (obj.hasOwnProperty(attr)) copy[attr] = this.clone(obj[attr]);
+      }
+      return copy;
+  }
+
+  throw new Error("Unable to copy obj! Its type isn't supported.");
+  }
   addItem = (e) => {
     let newPlayer = this.state.player;
     if (newPlayer.items.length < 3) {
       switch (e.target.name) {
         case "heal":
-          newPlayer.items.push(heal);
+          newPlayer.items.push(this.clone(heal));
           break;
         case "buff":
-          newPlayer.items.push(buff);
+          newPlayer.items.push(this.clone(buff));
 
           break;
         case "swift":
-          newPlayer.items.push(swift);
+          newPlayer.items.push(this.clone(swift));
 
           break;
         default:
@@ -227,19 +259,18 @@ class battle extends Component {
     }
   };
   removeItem = (item) => {
-    console.log("removing...");
+    console.log("removing... " + item.name);
     let newPlayer = this.state.player;
     let newUse = this.state.use;
 
     if (newPlayer.items.length) {
       let newItems = [...newPlayer.items];
-      newUse.splice(newUse.indexOf(item), 1);
+      console.log(newUse.indexOf(item));
       console.log(newItems.indexOf(item));
-      newItems.splice(newItems.indexOf(item), 1);
-      console.log(newItems.length);
+      newUse.splice(newUse.indexOf(item), 1);
+      newItems.splice(newItems.findIndex(x => x.name === item.name), 1);
       newPlayer.items = newItems;
-      console.log(newPlayer.items.length);
-      console.log(newUse.length);
+
       this.setState(
         {
           player: newPlayer,
@@ -252,10 +283,12 @@ class battle extends Component {
       );
     }
   };
+
   applyItem = (e) => {
     let newPlayer = this.state.player;
     let newHp = this.state.playerHp;
     let newUse = [...this.state.use];
+    console.log(e.target.id);
     console.log(e.target.getAttribute("data-name"))
     switch (e.target.getAttribute("data-name")) {
       case "heal":
@@ -275,18 +308,20 @@ class battle extends Component {
         }
         break;
       case "buff":
-        if(newUse.includes(buff)){
-          newUse.splice(e.target.id, 1);
-        }else{
-          newUse.splice(e.target.id, 0, buff);
-        }
+       if(newPlayer.items[e.target.id].use){
+         newPlayer.items[e.target.id].use = false;
+       }else{
+         newPlayer.items[e.target.id].use = true;
+       }
+
         break;
       case "swift":
-        if(newUse.includes(swift)){
-          newUse.splice(e.target.id, 1);
-        }else{
-          newUse.splice(e.target.id, 0, swift);
-        }
+       if(newPlayer.items[e.target.id].use){
+         newPlayer.items[e.target.id].use = false;
+       }else{
+         newPlayer.items[e.target.id].use = true;
+       }
+
         break;
       default:
         break;
@@ -295,6 +330,8 @@ class battle extends Component {
       playerHp: newHp,
       player: newPlayer,
       use: newUse,
+    }, ()=>{
+      console.log(this.state.player.items)
     });
     
 
@@ -482,24 +519,38 @@ class battle extends Component {
     let { player, enemy, use } = this.state;
     let itemEffect = 0;
     let newUse = [...use];
+    let length = player.items.length;
+    let items = player.items;
     let damage =
       Math.floor(
         Math.random() * (player.weapon.attackMax - player.weapon.attackMin)
       ) + player.weapon.attackMin;
-    console.log(use.includes(buff));
-    if (use.includes(buff)) {
-      for (let i = 0; i < newUse.length; i++) {
-        if (newUse[i].name === "buff") {
-          itemEffect += newUse[i].value;
-          this.updateConsole("Buff applied.");
+    console.log(items);
+    for(let i = 0; i < length; i++){
+      console.log(items[i].name + " " + items[i].use);
+      if(items[i].use && items[i].name === "buff"){
+        itemEffect += items[i].value;
+        this.updateConsole("Buff applied.");  
           console.log("buff applied.");
-          this.removeItem(newUse[i]);
-        }
+          this.removeItem(items[i]);
       }
+      console.log("LOG + " + i);
     }
+    //console.log(use.includes(buff));
+    // if (use.includes(buff)) {
+    //   for (let i = 0; i < newUse.length; i++) {
+    //     if (newUse[i].name === "buff") {
+    //       itemEffect += newUse[i].value;
+    //       this.updateConsole("Buff applied.");
+    //       console.log("buff applied.");
+    //       this.removeItem(newUse[i]);
+    //     }
+    //   }
+    // }
     let { defense } = enemy.armor;
     console.log("Player attack " + damage + " - enemy defense " + defense);
     let dmg = damage - defense;
+    this.resetItems();
     return dmg > 0 ? dmg + itemEffect : 0 + itemEffect;
   };
   enemyAttacks = () => {
@@ -694,38 +745,35 @@ class battle extends Component {
           let { player, enemy, use } = this.state;
           console.log(player.items.length);
           console.log(use.length);
-          let bonus = 0;
+          let itemEffect = 0;
+          let length = player.items.length;
+        let items = player.items;
 
-          if (use.length) {
-            let removedItems = [];
-            for (let i = 0; i < use.length; i++) {
-              if (use[i] === swift) {
-                bonus += use[i].value;
-                this.updateConsole("Swift applied.");
-                removedItems.push(use[i]);
-              }
+          for(let i = 0; i < length; i++){
+            console.log(items[i].use && items[i].name === "swift");
+            if(items[i].use && items[i].name === "swift"){
+              itemEffect += items[i].value;
+              this.updateConsole("swift applied.");
+                console.log("swift applied.");
+                this.removeItem(items[i]);
             }
-            removedItems.map((val) => {
-              this.removeItem(val);
-              return 0;
-            });
           }
 
           let playerRoll = this.rollDice(3, 1, 6);
           let enemyRoll = this.rollDice(3, 1, 6);
 
           let enemyHits = enemyRoll <= enemy.dex;
-          let playerHits = playerRoll <= player.dex + bonus;
+          let playerHits = playerRoll <= player.dex + itemEffect;
           console.log("enemyRoll " + enemyRoll + " <= " + enemy.dex + " = ");
           console.log("enemyHits= " + enemyHits);
 
           console.log(
-            "playerRoll " + playerRoll + " <= " + (player.dex + bonus) + " = "
+            "playerRoll " + playerRoll + " <= " + (player.dex + itemEffect) + " = "
           );
           console.log("playerHits= " + playerHits);
 
           if (
-            player.dex + player.armor.dex + bonus >
+            player.dex + player.armor.dex + itemEffect >
             enemy.dex + enemy.armor.dex
           ) {
             //1 - player attacks first
@@ -1367,7 +1415,6 @@ class battle extends Component {
               }
             } //2 - else player is already dead
           }
-
           this.setState({
             attacking: false,
           });
@@ -1376,6 +1423,13 @@ class battle extends Component {
     }
   };
 
+  resetItems = () =>{
+    let newItems = this.state.player.items;
+    for(let item in newItems){
+      console.log(item);
+      newItems[item].use = false;
+    }
+  }
   render() {
     return (
       <div className="scene">
@@ -1624,9 +1678,7 @@ class battle extends Component {
                 <tbody>
                  
                   {this.state.player.items.map((val, ind) => {
-                    console.log(this.state.use)
-                    console.log(ind)  
-
+                    
                     return (
                       <tr key={ind}>
                         <td>
@@ -1645,7 +1697,7 @@ class battle extends Component {
                             data-name={val.name}
                             onClick={this.applyItem}
                           >
-                            {ind < this.state.use.length && this.state.use[ind].name == val.name ?
+                            {val.use ?
                             "✓" : "" }
                           </button>
 

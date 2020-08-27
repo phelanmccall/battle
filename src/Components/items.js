@@ -13,19 +13,20 @@ const items = {
     heal: {
       img: healPic,
       name: "heal",
-      value: 6
+      value: 6,
+      use: false
     },
     buff: {
       img: buffPic,
-
       name: "buff",
-      value: 6
+      value: 6,
+      use: false
     },
     swift: {
       img: swiftPic,
-
       name: "swift",
-      value: 6
+      value: 6,
+      use: false
     },
      cloth : {
     name: "cloth",

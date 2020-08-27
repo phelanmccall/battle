@@ -192,7 +192,8 @@ class App extends Component {
 
       for(let k in player.items[i]){
         console.log(k);
-        console.log(player.items[i][k] === items[player.items[i].name][k]);
+        console.log(player.items[i][k]);
+        console.log(items[player.items[i].name][k]);
 
         itemsPass = player.items[i][k] === items[player.items[i].name][k];
         if(!itemsPass){
@@ -241,7 +242,6 @@ class App extends Component {
   save = (checkpoint) => {
     if(typeof(Storage) !== "undefined"){
         try{
-          localStorage.removeItem("checkpoing")
           localStorage.setItem("checkpoint", JSON.stringify(checkpoint));
           return "Checkpoint saved.";
         } catch {
@@ -256,6 +256,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <div id="error">{this.state.error}</div>
+
         <this.state.currentComponent
           start={this.start}
           changeStr={this.changeStr}
@@ -272,7 +274,6 @@ class App extends Component {
           save={this.save}
           load={this.load}
         />
-        <div>{this.state.error}</div>
       </div>
     );
   }
