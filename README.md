@@ -14,47 +14,47 @@ Play here: https://phelan-battle.herokuapp.com/
 
 ![Selecet your avatar](./screenshots/avatarscreenshot.png)  
 
-Avatars are purely aesthetic and do not effect gameplay. 
-If you have a saved game, you can load your checkpoint by clicking the "Load checkpoint" button at the bottom right corner.
+Avatars are purely aesthetic and do not effect gameplay.  
+If you have a saved game, you can load your checkpoint by clicking the "Load checkpoint" button at the bottom right corner.  
 
 2. Set your stats.
 
 ![Set your stats.](./screenshots/statscreenshot.png)  
 
-STR determines your HP and what weapons you can use.
-DEX determines when you attack and your accuracy.
+STR determines your HP and what weapons you can use.  
+DEX determines when you attack and your accuracy.  
 
 3. Select your gear.
 
 ![Select your gear](./screenshots/weaponsandarmor.png)  
 
-Dagger has the lowest STR requirement but weakest damage;
-Sword is a little better but requires more STR.
-Axe has the most damage but requires the most STR;
+Dagger has the lowest STR requirement but weakest damage.  
+Sword is a little better but requires more STR.  
+Axe has the most damage but requires the most STR.  
 
-Cloth provides 1 defense point and does not effect your DEX.
-Leather provides 3 defense point and lowers your DEX by 1.
-Plate provides 4 defense point and lowers your DEX by 2.
+Cloth provides 1 defense point and does not effect your DEX.  
+Leather provides 3 defense point and lowers your DEX by 1.  
+Plate provides 4 defense point and lowers your DEX by 2.  
 
 4. Select your starting item.
 
 ![Select your item](./screenshots/items.png)  
 
-Heal heals 6 hp before attacking. Will not be used if your health is full.
-Buff adds 6 damage to your next attack if you don't miss.
-Swift temporarily increases your DEX by 6 for your next attack. This will increase your chances of hitting your enemy.
+Heal heals 6 hp before attacking. Will not be used if your health is full.  
+Buff adds 6 damage to your next attack if you don't miss.  
+Swift temporarily increases your DEX by 6 for your next attack. This will increase your chances of hitting your enemy.  
 
 
 # Battle HUD
 
 ![Battle HUD](./screenshots/hud.png)  
 
-1. Console that reports the battle.
-2. Choose to Attack, Defend or Dodge.
-3. HP bar.
-4. Items you have.
-5. Avatar.
-6. Your stats and equipment.
+1. Console that reports the battle.  
+2. Choose to Attack, Defend or Dodge.  
+3. HP bar.  
+4. Items you have.  
+5. Avatar.  
+6. Your stats and equipment.  
 
 # Battle Scene
 
