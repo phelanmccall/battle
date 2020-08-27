@@ -194,36 +194,36 @@ class battle extends Component {
   };
   clone = (obj) => {
     let copy;
-    if(obj === null || typeof obj != "object") return obj;
+    if (obj === null || typeof obj != "object") return obj;
 
-    
     // Handle Date
     if (obj instanceof Date) {
       copy = new Date();
       copy.setTime(obj.getTime());
       return copy;
-  }
+    }
 
-  // Handle Array
-  if (obj instanceof Array) {
+    // Handle Array
+    if (obj instanceof Array) {
       copy = [];
       for (var i = 0, len = obj.length; i < len; i++) {
-          copy[i] = this.clone(obj[i]);
+        copy[i] = this.clone(obj[i]);
       }
       return copy;
-  }
+    }
 
-  // Handle Object
-  if (obj instanceof Object) {
+    // Handle Object
+    if (obj instanceof Object) {
       copy = {};
       for (var attr in obj) {
-          if (obj.hasOwnProperty(attr)) copy[attr] = this.clone(obj[attr]);
+        if (obj.hasOwnProperty(attr)) copy[attr] = this.clone(obj[attr]);
       }
       return copy;
-  }
+    }
 
-  throw new Error("Unable to copy obj! Its type isn't supported.");
-  }
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+  };
+
   addItem = (e) => {
     let newPlayer = this.state.player;
     if (newPlayer.items.length < 3) {
@@ -261,16 +261,18 @@ class battle extends Component {
 
     if (newPlayer.items.length) {
       let newItems = [...newPlayer.items];
-    
+
       newUse.splice(newUse.indexOf(item), 1);
-      newItems.splice(newItems.findIndex(x => x.name === item.name), 1);
+      newItems.splice(
+        newItems.findIndex((x) => x.name === item.name),
+        1
+      );
       newPlayer.items = newItems;
 
-      this.setState(
-        {
-          player: newPlayer,
-          use: newUse,
-        });
+      this.setState({
+        player: newPlayer,
+        use: newUse,
+      });
     }
   };
 
@@ -278,7 +280,7 @@ class battle extends Component {
     let newPlayer = this.state.player;
     let newHp = this.state.playerHp;
     let newUse = [...this.state.use];
-    
+
     switch (e.target.getAttribute("data-name")) {
       case "heal":
         if (newHp < newPlayer.str) {
@@ -297,19 +299,19 @@ class battle extends Component {
         }
         break;
       case "buff":
-       if(newPlayer.items[e.target.id].use){
-         newPlayer.items[e.target.id].use = false;
-       }else{
-         newPlayer.items[e.target.id].use = true;
-       }
+        if (newPlayer.items[e.target.id].use) {
+          newPlayer.items[e.target.id].use = false;
+        } else {
+          newPlayer.items[e.target.id].use = true;
+        }
 
         break;
       case "swift":
-       if(newPlayer.items[e.target.id].use){
-         newPlayer.items[e.target.id].use = false;
-       }else{
-         newPlayer.items[e.target.id].use = true;
-       }
+        if (newPlayer.items[e.target.id].use) {
+          newPlayer.items[e.target.id].use = false;
+        } else {
+          newPlayer.items[e.target.id].use = true;
+        }
 
         break;
       default:
@@ -320,8 +322,6 @@ class battle extends Component {
       player: newPlayer,
       use: newUse,
     });
-    
-
   };
   resetEnemies = () => {
     enemies.map((val, ind) => {
@@ -346,6 +346,7 @@ class battle extends Component {
         use: [],
       },
       () => {
+        this.resetItems();
         this.updateConsole(`Level ${this.state.level + 1}!`);
         this.updateConsole(`Fight!`);
       }
@@ -442,10 +443,8 @@ class battle extends Component {
               player: newPlayer,
               selectItem: true,
             };
-            this.setState(newState, () => {
-            });
+            this.setState(newState, () => { });
           } else {
-
             let newState = {
               player: newPlayer,
               levelUp: true,
@@ -503,11 +502,11 @@ class battle extends Component {
       Math.floor(
         Math.random() * (player.weapon.attackMax - player.weapon.attackMin)
       ) + player.weapon.attackMin;
-    for(let i = 0; i < length; i++){
-      if(items[i].use && items[i].name === "buff"){
+    for (let i = 0; i < length; i++) {
+      if (items[i].use && items[i].name === "buff") {
         itemEffect += items[i].value;
-        this.updateConsole("Buff applied.");  
-          this.removeItem(items[i]);
+        this.updateConsole("Buff applied.");
+        this.removeItem(items[i]);
       }
     }
     // if (use.includes(buff)) {
@@ -539,7 +538,7 @@ class battle extends Component {
     let { enemy } = this.state;
     let dif = enemy.dex;
     let die = this.rollDice(3, 1, 6);
-    
+
     let enemyHits = die < dif;
     //1 - enemy counters
     if (enemyHits) {
@@ -625,7 +624,7 @@ class battle extends Component {
     this.updateConsole("Player dodges.");
     let dif = enemy.dex - Math.floor(player.dex / 2);
     let die = this.rollDice(3, 1, 6);
-   
+
     let enemyHits = die < dif;
     //1 - enemy counters
     if (enemyHits) {
@@ -711,16 +710,16 @@ class battle extends Component {
         },
         () => {
           let { player, enemy, use } = this.state;
-          
+
           let itemEffect = 0;
           let length = player.items.length;
-        let items = player.items;
+          let items = player.items;
 
-          for(let i = 0; i < length; i++){
-            if(items[i].use && items[i].name === "swift"){
+          for (let i = 0; i < length; i++) {
+            if (items[i].use && items[i].name === "swift") {
               itemEffect += items[i].value;
               this.updateConsole("swift applied.");
-                this.removeItem(items[i]);
+              this.removeItem(items[i]);
             }
           }
 
@@ -729,7 +728,6 @@ class battle extends Component {
 
           let enemyHits = enemyRoll <= enemy.dex;
           let playerHits = playerRoll <= player.dex + itemEffect;
-          
 
           if (
             player.dex + player.armor.dex + itemEffect >
@@ -1382,12 +1380,13 @@ class battle extends Component {
     }
   };
 
-  resetItems = () =>{
+  resetItems = () => {
     let newItems = this.state.player.items;
-    for(let item in newItems){
+    for (let item in newItems) {
       newItems[item].use = false;
     }
-  }
+  };
+
   render() {
     return (
       <div className="scene">
@@ -1625,48 +1624,43 @@ class battle extends Component {
                 src={this.state.player.avatar}
               ></img>
             </div>
-            {(
+            {
               <table id="items">
                 <thead>
                   <tr>
-                  <th>Apply items:</th>
-
+                    <th>Apply items:</th>
                   </tr>
                 </thead>
                 <tbody>
-                 
                   {this.state.player.items.map((val, ind) => {
-                    
                     return (
                       <tr key={ind}>
                         <td>
-                        {val.name}<br/>
+                          {val.name}
+                          <br />
 
                           <button
                             type="button"
                             key={ind}
                             id={ind}
                             style={{
-                                backgroundImage: `url(${val.img})`,
-                                backgroundSize: "40px 40px",
-                                height: "44px",  
-                                width: "44px"
-                              }}
+                              backgroundImage: `url(${val.img})`,
+                              backgroundSize: "40px 40px",
+                              height: "44px",
+                              width: "44px",
+                            }}
                             data-name={val.name}
                             onClick={this.applyItem}
                           >
-                            {val.use ?
-                            "✓" : "" }
+                            {val.use ? "✓" : ""}
                           </button>
-
-
                         </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
-            )}
+            }
             <table>
               <thead>
                 <tr>
