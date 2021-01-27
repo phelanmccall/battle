@@ -1,7 +1,5 @@
 # Battle
 
-![Battle title logo](./screenshots/titlescreenshot.png)
-
 Welcome to Battle by Phelan.
 
 Play here: https://phelan-battle.herokuapp.com/
